@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mp-nre</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #212529;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    header .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      opacity: 0.9;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      max-width: 680px;
+      width: 100%;
+      padding: 3rem 3.5rem;
+    }
+
+    .card .eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #e67e22;
+      margin-bottom: 0.75rem;
+    }
+
+    .card h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a3a5c;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+
+    .card p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #495057;
+      margin-bottom: 1rem;
+    }
+
+    .card p:last-of-type {
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.65rem 1.5rem;
+      background: #1a3a5c;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #15304f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.82rem;
+      color: #adb5bd;
+    }
+
+    @media (max-width: 520px) {
+      .card {
+        padding: 2rem 1.5rem;
+      }
+      .card h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="logo">IDinsight &mdash; mp-nre</span>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="eyebrow">Project</div>
+      <h1>Welcome</h1>
+      <p>
+        This site hosts resources for the <strong>mp-nre</strong> project.
+        Use the link below to access the project materials.
+      </p>
+      <p>
+        For questions or access issues, please reach out to the project team.
+      </p>
+      <a class="btn" href="#">View Project Materials</a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; <span id="yr"></span> IDinsight. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("yr").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
