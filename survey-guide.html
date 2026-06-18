@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PM Suryaghar — Survey Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-blue:   #1C2F62;
+      --blue-2:      #173363;
+      --blue-3:      #264D96;
+      --blue-4:      #5480D6;
+      --light-blue:  #A8CCEB;
+      --dark-green:  #0F4D42;
+      --light-green: #ABE5BF;
+      --dark-yellow: #D49E00;
+      --light-yellow:#FFE087;
+      --dark-grey:   #212E38;
+      --light-grey:  #F2F2F5;
+      --mid-grey:    #CDD3DC;
+      --white:       #FFFFFF;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--light-grey);
+      color: var(--dark-grey);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--dark-blue);
+      color: var(--white);
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-left { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    .header-org {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .header-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .survey-badge {
+      background: var(--blue-3);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.3rem 0.85rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      display: none;
+    }
+    .survey-badge.visible { display: inline-block; }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .container { max-width: 660px; width: 100%; }
+
+    /* ── Progress ── */
+    .progress-wrap { margin-bottom: 1.25rem; display: none; }
+    .progress-wrap.visible { display: block; }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+
+    .progress-module {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--blue-3);
+    }
+
+    .progress-qid {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--dark-grey);
+      opacity: 0.45;
+    }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--light-blue);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue-3);
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(28, 47, 98, 0.09);
+      padding: 2.25rem 2.5rem;
+      animation: slideUp 0.2s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Survey selector ── */
+    .selector-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-3);
+      margin-bottom: 0.6rem;
+    }
+
+    .selector-title {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--dark-blue);
+      line-height: 1.25;
+      margin-bottom: 0.6rem;
+    }
+
+    .selector-subtitle {
+      font-size: 0.88rem;
+      color: var(--dark-grey);
+      opacity: 0.65;
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+
+    .survey-cards { display: flex; flex-direction: column; gap: 0.85rem; }
+
+    .survey-card-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--light-grey);
+      border: 2px solid transparent;
+      border-radius: 9px;
+      padding: 1.1rem 1.3rem;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background 0.15s;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .survey-card-btn:hover {
+      border-color: var(--blue-4);
+      background: #eef2fc;
+    }
+
+    .survey-num-badge {
+      background: var(--dark-blue);
+      color: var(--white);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 0.1rem;
+    }
+
+    .survey-card-body { display: flex; flex-direction: column; gap: 0.2rem; }
+
+    .survey-card-name {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--dark-blue);
+    }
+
+    .survey-card-desc {
+      font-size: 0.8rem;
+      color: var(--dark-grey);
+      opacity: 0.6;
+      line-height: 1.5;
+    }
+
+    /* ── Question screen ── */
+    .q-module {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-3);
+      margin-bottom: 0.35rem;
+    }
+
+    .q-text {
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: var(--dark-blue);
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+
+    .q-hindi {
+      font-size: 0.88rem;
+      color: var(--dark-grey);
+      opacity: 0.6;
+      font-style: italic;
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Enumerator instruction note */
+    .enum-note {
+      background: #fffbea;
+      border-left: 3px solid var(--dark-yellow);
+      border-radius: 0 6px 6px 0;
+      padding: 0.7rem 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .enum-note-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #9a7000;
+      margin-bottom: 0.3rem;
+    }
+
+    .enum-note-text {
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: #5a4200;
+    }
+
+    /* Options */
+    .options { display: flex; flex-direction: column; gap: 0.55rem; }
+
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      background: var(--light-grey);
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.12s, background 0.12s;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .option-btn:hover {
+      border-color: var(--blue-4);
+      background: #eef2fc;
+    }
+
+    .option-btn:active {
+      background: #dce6f8;
+      border-color: var(--blue-3);
+    }
+
+    .option-radio {
+      width: 17px;
+      height: 17px;
+      min-width: 17px;
+      border-radius: 50%;
+      border: 2px solid var(--blue-4);
+      margin-top: 2px;
+      transition: border-color 0.12s;
+    }
+
+    .option-btn:hover .option-radio { border-color: var(--blue-3); }
+
+    .option-content { display: flex; flex-direction: column; gap: 0.2rem; }
+
+    .option-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dark-grey);
+      line-height: 1.4;
+    }
+
+    .option-hindi {
+      font-size: 0.8rem;
+      color: var(--dark-grey);
+      opacity: 0.58;
+      font-style: italic;
+    }
+
+    .option-action {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--blue-3);
+      margin-top: 0.1rem;
+    }
+
+    /* Open text */
+    .open-text-area {
+      width: 100%;
+      min-height: 110px;
+      border: 1.5px solid var(--mid-grey);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--dark-grey);
+      resize: vertical;
+      line-height: 1.55;
+      transition: border-color 0.15s;
+    }
+
+    .open-text-area:focus {
+      outline: none;
+      border-color: var(--blue-3);
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.6rem 1.3rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary   { background: var(--dark-blue); color: var(--white); }
+    .btn-primary:hover { background: var(--blue-2); }
+
+    .btn-success   { background: var(--dark-green); color: var(--white); }
+    .btn-success:hover { background: #0a3c33; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--dark-grey);
+      border: 1.5px solid var(--mid-grey);
+    }
+    .btn-ghost:hover { border-color: var(--blue-4); color: var(--blue-3); }
+
+    /* ── End screen ── */
+    .end-wrap { text-align: center; }
+
+    .end-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.1rem;
+      font-size: 1.4rem;
+    }
+
+    .end-icon.complete  { background: var(--light-green); color: var(--dark-green); }
+    .end-icon.stopped   { background: var(--light-grey);  color: var(--dark-grey); }
+
+    .end-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark-blue);
+      margin-bottom: 0.45rem;
+    }
+
+    .end-msg {
+      font-size: 0.88rem;
+      color: var(--dark-grey);
+      opacity: 0.65;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Classification tags (Survey 2 only) */
+    .classification {
+      text-align: left;
+      border-top: 1.5px solid var(--light-grey);
+      padding-top: 1.4rem;
+      margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .classification-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--dark-grey);
+      opacity: 0.55;
+      margin-bottom: 0.75rem;
+    }
+
+    .tag-grid { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+
+    .tag {
+      padding: 0.38rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid var(--mid-grey);
+      background: var(--white);
+      color: var(--dark-grey);
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+
+    .tag:hover    { border-color: var(--blue-4); color: var(--blue-3); }
+    .tag.selected { background: var(--dark-blue); color: var(--white); border-color: var(--dark-blue); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.75rem;
+      color: #adb5bd;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 500px) {
+      header { padding: 0.8rem 1rem; }
+      .card  { padding: 1.5rem 1.25rem; }
+      main   { padding: 1.25rem 0.85rem 2.5rem; }
+      .selector-title { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="header-org">IDinsight</span>
+    <span class="header-title">PM Suryaghar — Survey Guide</span>
+  </div>
+  <span class="survey-badge" id="surveyBadge"></span>
+</header>
+
+<main>
+  <div class="container">
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-meta">
+        <span class="progress-module" id="progressModule"></span>
+        <span class="progress-qid"   id="progressQid"></span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="card" id="mainCard"></div>
+  </div>
+</main>
+
+<footer>&copy; <span id="yr"></span> IDinsight. All rights reserved.</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ─── Survey data ──────────────────────────────────────────────────────────────
+// Each question: { module, id, text, hindi?, note?, options?, isOpenText?, next?, showClassification? }
+// Each option:   { text, hindi?, actionNote?, next }
+
+const CONSENT_QUESTIONS = {
+  consent1: {
+    module: 'Consent',
+    id: 'Consent 1',
+    text: 'Do you agree to participate in this survey?',
+    note: 'Read aloud: "Hello! My name is [enumerator name]… Participating in this survey is not mandatory and even if you agree now, you can stop it at any time. You can choose not to answer any question as you see fit. Your identity will be kept fully confidential. We will only share collectively what all the people we\'ve spoken to have said, not of any one person."',
+    options: [
+      { text: 'Yes', next: 'consent2' },
+      { text: 'No', next: 'end_refused' }
+    ]
+  },
+  consent2: {
+    module: 'Consent',
+    id: 'Consent 2',
+    text: 'Do you consent to having me audio record our conversation?',
+    note: 'READ OUT LOUD: "To be sure that I understand your responses, I would also like to record the conversation. Other members of the research team will listen to the recording to verify that what we have done is correct. Those members of the research team, as well as translators and people who oversee our work to make sure we conduct our research ethically, may also be able to see information about you. You may still participate in the survey even if I do not record it."',
+    options: [
+      { text: 'Yes', next: 'q0' },
+      { text: 'No', next: 'q0' }
+    ]
+  }
+};
+
+const Q0 = {
+  module: 'Module 0: Call Outcome',
+  id: 'Q0',
+  text: 'Was the call connected?',
+  hindi: 'Call connect hua?',
+  note: 'Enumerator records — do not read aloud.',
+  options: [
+    { text: 'Connected',                                       hindi: '',                                                next: 'q1' },
+    { text: 'Not connected — rang, no answer',                 hindi: 'Ring gayi, koi jawab nahi',                      next: 'end_no_answer' },
+    { text: 'Not connected — number invalid / switched off',   hindi: 'Number galat hai / switched off',                next: 'end_invalid' },
+    { text: 'Connected but refused to talk / hung up',         hindi: 'Connected hua par baat nahi ki / hang up kar diya', next: 'end_hung_up' }
+  ]
+};
+
+const SURVEYS = {
+
+  // ── Survey 1: Vendor Selection ─────────────────────────────────────────────
+  s1: {
+    name: 'Survey 1',
+    title: 'Vendor Selection',
+    badge: 'Survey 1',
+    startQuestion: 'consent1',
+    questions: {
+      ...CONSENT_QUESTIONS,
+      q0: Q0,
+
+      q1: {
+        module: 'Module 1: Status Verification',
+        id: 'Q1',
+        text: 'Has installation started or been completed at your home?',
+        hindi: 'Kya aapke yahan solar panel ka kaam shuru ho gaya hai ya lag gaya hai?',
+        options: [
+          { text: 'Yes — installation complete',     hindi: 'Haan, installation ho gaya',          next: 'q1a', actionNote: 'Note: filter out — applicant has already progressed.' },
+          { text: 'Work in progress',                hindi: 'Kaam shuru hai / chal raha hai',       next: 'q1a', actionNote: 'Note: filter out — applicant is working with a vendor.' },
+          { text: 'No, not started yet',             hindi: 'Nahi, abhi shuru nahi hua',            next: 'q2' }
+        ]
+      },
+
+      q1a: {
+        module: 'Module 1: Status Verification',
+        id: 'Q1a',
+        text: 'Are you facing any issues?',
+        hindi: 'Kya aapko koi dikkat aa rahi hai?',
+        options: [
+          { text: 'No, everything is fine',                                        hindi: 'Nahi, sab theek chal raha hai',                              next: 'q1b' },
+          { text: 'Yes — subsidy not received',                                    hindi: 'Haan, subsidy nahi aayi',                                    next: 'q1b' },
+          { text: 'Yes — DISCOM inspection / net metering not done',               hindi: 'Haan, DISCOM inspection / net metering nahi hua',            next: 'q1b' },
+          { text: 'Yes — installation is slow',                                    hindi: 'Haan, installation dheere chal raha hai',                    next: 'q1b', actionNote: 'Record the name of the vendor they are working with.' },
+          { text: 'Yes — installation quality issue / panels not working',         hindi: 'Haan, installation quality mein dikkat / panels kaam nahi kar rahe', next: 'q1b' },
+          { text: 'Yes — other issue',                                             hindi: 'Haan, koi aur dikkat (record karo)',                         next: 'q1b', actionNote: 'Record the issue.' }
+        ]
+      },
+
+      q1b: {
+        module: 'Module 1: Status Verification',
+        id: 'Q1b',
+        text: 'It appears you are currently working with a vendor. How can we support you with selecting them on the portal?',
+        hindi: 'Aapne vendor decide kar liya hai — portal par select karne mein hum aapki kya madad kar saktein hain?',
+        note: 'Explain to the applicant why this step is necessary for subsequent stages to take place, including subsidy disbursement.',
+        options: [
+          { text: 'Explain how to select vendor on portal — step by step', hindi: 'Portal par vendor kaise select karein — step by step batayein', next: 'q8', actionNote: 'Explain the process.' },
+          { text: 'Want to select a different vendor',                     hindi: 'Koi aur vendor select karna hai',                               next: 'q8', actionNote: 'Explain the process.' },
+          { text: 'No longer wants installation',                          hindi: 'Ab installation nahi chahiye',                                 next: 'q8' },
+          { text: 'Other help needed',                                     hindi: 'Koi aur madad (record karo)',                                  next: 'q8', actionNote: 'Record the issue.' }
+        ]
+      },
+
+      q2: {
+        module: 'Module 2: Interest and Intent',
+        id: 'Q2',
+        text: 'Are you still interested in getting rooftop solar installed under PM Surya Ghar Yojana?',
+        hindi: 'Kya aap abhi bhi PM Surya Ghar Yojana ke tahat solar panel lagwana chahte hain?',
+        options: [
+          { text: 'Yes, interested',                   hindi: 'Haan, interested hain',              next: 'q4' },
+          { text: 'Considering / not yet decided',     hindi: 'Soch rahe hain / faisla nahi hua',   next: 'q3' },
+          { text: 'No, no longer interested',          hindi: 'Nahi, ab nahi chahiye',              next: 'q2a' }
+        ]
+      },
+
+      q2a: {
+        module: 'Module 2: Interest and Intent',
+        id: 'Q2a',
+        text: 'What is the main reason you are no longer interested?',
+        hindi: 'Kya wajah hai ki aap ab solar panel nahi lagwana chahte?',
+        options: [
+          { text: 'Cost is too high',                             hindi: 'Cost bahut zyada lag raha hai',                         next: 'q8' },
+          { text: 'Cannot get a loan',                            hindi: 'Loan nahi mil raha',                                    next: 'q8' },
+          { text: 'Roof / space issue',                           hindi: "Ghar ki chhat / jagah ki dikkat hai",                   next: 'q8' },
+          { text: 'Low electricity bill — not needed',            hindi: 'Bijli ka bill kam aata hai, zaroorat nahi lagi',        next: 'q8' },
+          { text: 'No trust in vendor / scheme',                  hindi: 'Vendor ya scheme ke baare mein bharosa nahi hai',       next: 'q8' },
+          { text: 'Applied by mistake / someone else applied',    hindi: 'Galti se apply ho gaya tha / kisi aur ne karwaya tha', next: 'q8' },
+          { text: 'Other reason',                                 hindi: 'Koi aur wajah (record karo)',                          next: 'q8', actionNote: 'Record the reason.' }
+        ]
+      },
+
+      q3: {
+        module: 'Module 3: Undecided / Considering',
+        id: 'Q3',
+        text: 'What would help you make a decision?',
+        hindi: 'Kya koi cheez hai jo aapki madad kar sakti hai decide karne mein?',
+        options: [
+          { text: 'Need full information about the process',      hindi: 'Process ki poori jaankari chahiye',                               next: 'q8' },
+          { text: 'Need information on costs and subsidy',        hindi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh jaankari chahiye', next: 'q8' },
+          { text: 'Need information about vendors',               hindi: 'Vendor ke baare mein jaankari chahiye',                           next: 'q8' },
+          { text: 'Need information about loans',                 hindi: 'Loan ki jaankari chahiye',                                        next: 'q8' },
+          { text: 'Nothing needed right now — will decide later', hindi: 'Abhi kuch nahi chahiye, baad mein dekhenge',                      next: 'q8' },
+          { text: 'Other help',                                   hindi: 'Koi aur madad (record karo)',                                     next: 'q8', actionNote: 'Record.' }
+        ]
+      },
+
+      q4: {
+        module: 'Module 4: Vendor Decision',
+        id: 'Q4',
+        text: 'Have you decided on a vendor?',
+        hindi: 'Kya aapne kisi vendor ko decide kar liya hai?',
+        options: [
+          { text: 'Yes, vendor decided',    hindi: 'Haan, vendor decide kar liya hai',  next: 'q6' },
+          { text: 'No, not yet decided',    hindi: 'Nahi, abhi decide nahi kiya',       next: 'q5' }
+        ]
+      },
+
+      q5: {
+        module: 'Module 4: Vendor Decision',
+        id: 'Q5',
+        text: 'What would help you decide on a vendor?',
+        hindi: 'Vendor decide karne mein aapko kya madad chahiye?',
+        options: [
+          { text: 'Need full info on process — how to find / select a vendor', hindi: 'Process ki poori jaankari chahiye — vendor kaise dhundhe / select karein',  next: 'q8', actionNote: 'Explain portal vendor selection steps.' },
+          { text: 'Need vendor information — ratings, reviews, contact details',hindi: 'Vendor ke baare mein jaankari chahiye — ratings, reviews, contact details', next: 'q8', actionNote: 'Share registered vendor list for district.' },
+          { text: 'Need to understand costs and subsidy',                       hindi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh samajhna hai',            next: 'q8', actionNote: 'Explain subsidy slabs and typical costs.' },
+          { text: 'Cannot navigate portal / needs help',                        hindi: 'Portal chalana nahi aata / kisi ki madad chahiye',                         next: 'q8', actionNote: 'Provide step-by-step portal guidance or helpline number.' },
+          { text: 'Need loan information',                                      hindi: 'Loan ki jaankari chahiye',                                                 next: 'q8', actionNote: 'Provide guidance needed.' },
+          { text: 'Other help needed',                                          hindi: 'Kuch aur madad (record karo)',                                             next: 'q8' }
+        ]
+      },
+
+      q6: {
+        module: 'Module 4: Vendor Decision',
+        id: 'Q6',
+        text: 'You have decided on a vendor — why have you not selected them on the portal?',
+        hindi: 'Aapne vendor decide kar liya hai — phir portal par select kyun nahi kiya?',
+        options: [
+          { text: 'Tried portal but got a technical error',                               hindi: 'Portal par try kiya par technical error / problem aa gayi',                       next: 'q8' },
+          { text: 'Did not know they had to do it — thought vendor would do it',          hindi: 'Mujhe pata nahi tha ki mujhe portal par karna hai — laga tha vendor khud kar lega', next: 'q8', actionNote: 'Explain the process.' },
+          { text: 'Have not had time yet / will do later',                                hindi: 'Abhi time nahi mila / baad mein karenge',                                          next: 'q8' },
+          { text: 'Vendor did not respond / no reply after contact',                      hindi: 'Vendor ne response nahi diya / contact kiya par jawab nahi mila',                   next: 'q8', actionNote: 'Ask for vendor name and flag as vendor non-responsive.' },
+          { text: 'Need a vendor number for their area',                                  hindi: 'Koi vendor ka number chahiye jo mere area mein kaam karta hai',                     next: 'q8', actionNote: 'Share registered vendor list for district.' },
+          { text: 'Need loan / finance information',                                      hindi: 'Loan / finance ke baare mein jaankari chahiye',                                    next: 'q8', actionNote: 'Provide information.' },
+          { text: 'Need to understand subsidy and costs',                                 hindi: 'Subsidy kitni milegi, kitna kharcha aayega — yeh samajhna hai',                    next: 'q8', actionNote: 'Provide information.' },
+          { text: 'Other reason',                                                         hindi: 'Koi aur wajah (record karo)',                                                      next: 'q8' }
+        ]
+      },
+
+      q8: {
+        module: 'Close',
+        id: 'Q8',
+        text: 'Enumerator notes',
+        hindi: '',
+        note: 'Mandatory. Note anything else the applicant mentioned that the above questions did not capture.',
+        isOpenText: true,
+        next: 'end_complete'
+      }
+    }
+  },
+
+  // ── Survey 2: Upload Agreement / Installation Not Done ────────────────────
+  s2: {
+    name: 'Survey 2',
+    title: 'Upload Agreement / Installation Not Done',
+    badge: 'Survey 2',
+    startQuestion: 'consent1',
+    questions: {
+      ...CONSENT_QUESTIONS,
+      q0: Q0,
+
+      q1: {
+        module: 'Module 1: Status Verification',
+        id: 'Q1',
+        text: 'Has installation started at your home?',
+        hindi: 'Kya aapke yahan solar panel ka kaam shuru ho gaya hai?',
+        options: [
+          { text: 'Yes — installation complete',  hindi: 'Haan, installation ho gaya (complete)',          next: 'q1d' },
+          { text: 'Work in progress',             hindi: 'Kaam shuru hai / chal raha hai (in progress)',   next: 'q1d' },
+          { text: 'No, nothing has happened yet', hindi: 'Nahi, abhi tak kuch nahi hua',                  next: 'q1e' }
+        ]
+      },
+
+      q1d: {
+        module: 'Module 1: Status Verification',
+        id: 'Q1d',
+        text: 'Are you facing any issues?',
+        hindi: 'Kya aapko koi dikkat aa rahi hai?',
+        options: [
+          { text: 'No, everything is fine',                                       hindi: 'Nahi, sab theek hai',                                               next: 'q9',  actionNote: 'Record: "Resolved / on track; vendor side issue of not updating the portal."' },
+          { text: 'Yes — vendor has not uploaded details on portal',              hindi: 'Haan, vendor ne portal par details upload nahi ki',                  next: 'q9',  actionNote: 'Urge applicant to get vendor to upload.' },
+          { text: 'Yes — subsidy not received / delay in subsidy',               hindi: 'Haan, subsidy nahi aayi / subsidy mein delay',                       next: 'q9' },
+          { text: 'Yes — DISCOM inspection / net metering not done',              hindi: 'Haan, DISCOM inspection / net metering nahi hua',                    next: 'q9' },
+          { text: 'Yes — installation is slow',                                   hindi: 'Haan, installation dheere chal raha hai',                            next: 'q6',  actionNote: 'Record the name of the vendor they are working with.' },
+          { text: 'Yes — installation quality issue / panels not working',        hindi: 'Haan, installation quality mein dikkat / panels kaam nahi kar rahe', next: 'q9' },
+          { text: 'Yes — other issue',                                            hindi: 'Haan, koi aur dikkat (record karo)',                                 next: 'q9',  actionNote: 'Record issue.' }
+        ]
+      },
+
+      q1e: {
+        module: 'Module 1: Status Verification',
+        id: 'Q1e',
+        text: 'Our records show you selected [VENDOR NAME] approximately [X months] ago. Is that correct?',
+        hindi: 'Hamare record ke hisaab se aapne [VENDOR NAME] ko select kiya tha, lagbhag [X mahine] pehle. Kya yeh sahi hai?',
+        note: 'Pre-populated from backend data. Read aloud to the respondent.',
+        options: [
+          { text: 'Yes, correct',                  hindi: 'Haan, sahi hai',              next: 'q2' },
+          { text: 'No — different vendor name',    hindi: 'Nahi, vendor ka naam alag hai', next: 'q2', actionNote: 'Record the correct vendor name.' },
+          { text: 'Cannot remember',               hindi: 'Mujhe yaad nahi',             next: 'q2', actionNote: 'Proceed with telemetry data.' }
+        ]
+      },
+
+      q2: {
+        module: 'Module 2: Interest and Intent',
+        id: 'Q2',
+        text: 'Are you still interested in getting rooftop solar installed under PM Surya Ghar Yojana?',
+        hindi: 'Kya aap abhi bhi PM Surya Ghar Yojana ke tahat solar panel lagwana chahte hain?',
+        options: [
+          { text: 'Yes, interested',                  hindi: 'Haan, interested hain',             next: 'q4' },
+          { text: 'Considering / not yet decided',    hindi: 'Soch rahe hain / faisla nahi hua',  next: 'q3' },
+          { text: 'No, no longer interested',         hindi: 'Nahi, ab nahi chahiye',             next: 'q2a' }
+        ]
+      },
+
+      q2a: {
+        module: 'Module 2: Interest and Intent',
+        id: 'Q2a',
+        text: 'What is the main reason you are no longer interested?',
+        hindi: 'Kya wajah hai ki aap ab solar panel nahi lagwana chahte?',
+        options: [
+          { text: 'Cost is too high',                            hindi: 'Cost bahut zyada lag raha hai',                         next: 'q9' },
+          { text: 'Cannot get a loan',                           hindi: 'Loan nahi mil raha',                                    next: 'q9' },
+          { text: 'Roof / space issue',                          hindi: "Ghar ki chhat / jagah ki dikkat hai",                   next: 'q9' },
+          { text: 'Low electricity bill — not needed',           hindi: 'Bijli ka bill kam aata hai, zaroorat nahi lagi',        next: 'q9' },
+          { text: 'No trust in vendor / scheme',                 hindi: 'Vendor ya scheme ke baare mein bharosa nahi hai',       next: 'q9' },
+          { text: 'Applied by mistake / someone else applied',   hindi: 'Galti se apply ho gaya tha / kisi aur ne karwaya tha', next: 'q9' },
+          { text: 'Other reason',                                hindi: 'Koi aur wajah (record karo)',                          next: 'q9' }
+        ]
+      },
+
+      q3: {
+        module: 'Module 3: Undecided / Considering',
+        id: 'Q3',
+        text: 'What would help you make a decision?',
+        hindi: 'Kya koi cheez hai jo aapki madad kar sakti hai decide karne mein?',
+        options: [
+          { text: 'Need full information about the process',      hindi: 'Process ki poori jaankari chahiye',                                next: 'q9' },
+          { text: 'Need information on costs and subsidy',        hindi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh jaankari chahiye', next: 'q9' },
+          { text: 'Need information about vendors',               hindi: 'Vendor ke baare mein jaankari chahiye',                            next: 'q9' },
+          { text: 'Need information about loans',                 hindi: 'Loan ki jaankari chahiye',                                         next: 'q9' },
+          { text: 'Nothing needed right now — will decide later', hindi: 'Abhi kuch nahi chahiye, baad mein dekhenge',                       next: 'q9' },
+          { text: 'Other help',                                   hindi: 'Koi aur madad (record karo)',                                      next: 'q9', actionNote: 'Record.' }
+        ]
+      },
+
+      q4: {
+        module: 'Module 4: Vendor Contact and Engagement',
+        id: 'Q4',
+        text: 'If work has not started yet, is there anything holding it up?',
+        hindi: 'Agar kaam shuru nahi hua, toh koi rukawat hai?',
+        options: [
+          { text: 'No, everything is fine',                             hindi: 'Nahi, sab theek hai',                              next: 'q9' },
+          { text: 'Yes — delay from vendor side',                       hindi: 'Haan, vendor ki taraf se delay hai',               next: 'q6' },
+          { text: 'Yes — loan arrangement still pending',               hindi: 'Haan, loan ka intezaam baaki hai',                 next: 'q5' },
+          { text: 'DISCOM approval pending',                            hindi: 'DISCOM approval pending hai',                     next: 'q8b' },
+          { text: 'Yes — some documents still pending from my side',    hindi: 'Haan, mere taraf se kuch documents baaki hain',    next: 'q8b' },
+          { text: 'Cost is too high',                                   hindi: 'Cost bahut zyada lag raha hai',                   next: 'q8b' },
+          { text: 'Other reason',                                       hindi: 'Aur kuch wajah (record karo)',                    next: 'q8b' }
+        ]
+      },
+
+      q5: {
+        module: 'Module 5: Funding Barriers',
+        id: 'Q5',
+        text: 'Have you applied for a loan?',
+        hindi: 'Kya aapne loan ke liye apply kiya hai?',
+        options: [
+          { text: 'Yes, applied but rejected',                                    hindi: 'Haan, apply kiya par reject ho gaya',                    next: 'q5b' },
+          { text: 'Yes, applied — processing in progress',                        hindi: 'Haan, apply kiya, processing mein hai',                  next: 'q8b' },
+          { text: 'Yes, loan approved but money not received',                    hindi: 'Haan, loan approve hua par paisa nahi aaya',             next: 'q8b' },
+          { text: 'No, did not apply — do not know where to apply',              hindi: 'Nahi, apply nahi kiya — pata nahi kahan se karein',      next: 'q8b', actionNote: 'Flag: needs loans guidance.' },
+          { text: 'No — bank refusing to give loan',                             hindi: 'Nahi, bank wale loan dene se mana kar rahe hain',        next: 'q5b' }
+        ]
+      },
+
+      q5b: {
+        module: 'Module 5: Funding Barriers',
+        id: 'Q5b',
+        text: 'Which bank, and what reason did they give?',
+        hindi: 'Kaunsa bank tha? Aur unhone kya wajah batayi?',
+        note: 'Bank name: open text — enumerator records.',
+        options: [
+          { text: 'CIBIL score / credit history',                hindi: 'CIBIL score / credit history',                    next: 'q8b' },
+          { text: 'Income too low',                              hindi: 'Income kam hai',                                  next: 'q8b' },
+          { text: 'Age too high',                                hindi: 'Umar zyada hai',                                  next: 'q8b' },
+          { text: 'Documents incomplete',                        hindi: 'Documents incomplete hain',                       next: 'q8b' },
+          { text: 'Bank said no target / scheme not available',  hindi: 'Bank ne bola target nahi hai / scheme nahi hai',  next: 'q8b' },
+          { text: 'No reason given',                             hindi: 'Koi wajah nahi batayi',                           next: 'q8b' },
+          { text: 'Other reason',                                hindi: 'Koi aur wajah (record karo)',                     next: 'q8b' }
+        ]
+      },
+
+      q6: {
+        module: 'Module 6: Vendor-Side Barriers',
+        id: 'Q6',
+        text: 'Did the vendor give any reason for the delay?',
+        hindi: 'Kya vendor ne koi wajah batayi delay ki?',
+        options: [
+          { text: 'Material / equipment not available',                             hindi: 'Material / equipment available nahi hai',                     next: 'q7a' },
+          { text: 'Vendor said there is other work in the area — will come later',  hindi: 'Vendor ne bola area mein aur kaam hain, baad mein aayenge',   next: 'q7a' },
+          { text: 'No reason given',                                                hindi: 'Koi wajah nahi batayi',                                      next: 'q7a' },
+          { text: 'Other reason',                                                   hindi: 'Koi aur wajah (record karo)',                                next: 'q7a' }
+        ]
+      },
+
+      q7a: {
+        module: 'Module 7: Vendor Change and Agreement Upload',
+        id: 'Q7a',
+        text: 'What help would make it possible for you to move forward?',
+        hindi: 'Aapke liye aage badhne ke liye kya madad chahiye?',
+        options: [
+          { text: 'Continue with same vendor — just get work done faster', hindi: 'Same vendor ke saath continue karna chahte hain, par jaldi kaam ho jaye', next: 'q9' },
+          { text: 'Want to change vendor',                                  hindi: 'Vendor badalna chahte hain',                                             next: 'q7b', actionNote: 'Flag: wants vendor change.' },
+          { text: 'No help needed right now',                               hindi: 'Abhi kuch nahi chahiye',                                                 next: 'q9' },
+          { text: 'Other help',                                             hindi: 'Kuch aur madad (record karo)',                                            next: 'q9' }
+        ]
+      },
+
+      q7b: {
+        module: 'Module 7: Vendor Change and Agreement Upload',
+        id: 'Q7b',
+        text: 'Do you know how to change the vendor on the portal?',
+        hindi: 'Kya aapko pata hai vendor kaise change karein portal par?',
+        options: [
+          { text: 'Yes', hindi: 'Haan', next: 'q9', actionNote: 'Ask the applicant to go ahead and change the vendor on the portal.' },
+          { text: 'No',  hindi: 'Nahi', next: 'q9', actionNote: 'Explain the process of changing the vendor.' }
+        ]
+      },
+
+      q8b: {
+        module: 'Module 8: Assistance and Close',
+        id: 'Q8b',
+        text: 'What help would make it possible for you to move forward?',
+        hindi: 'Aapke liye aage badhne ke liye kya madad chahiye?',
+        options: [
+          { text: 'Help with loan / finance',             hindi: 'Loan / finance mein madad',        next: 'q9' },
+          { text: 'How to proceed on the portal',         hindi: 'Portal par kaise proceed karein',  next: 'q9', actionNote: 'Explain portal navigation.' },
+          { text: 'Help with DISCOM / net metering',      hindi: 'DISCOM / net metering mein madad', next: 'q9', actionNote: 'Support with process awareness.' },
+          { text: 'No help needed right now',             hindi: 'Abhi kuch nahi chahiye',           next: 'q9' },
+          { text: 'Other help',                           hindi: 'Kuch aur madad (record karo)',     next: 'q9' }
+        ]
+      },
+
+      q9: {
+        module: 'Close',
+        id: 'Q9',
+        text: 'Enumerator notes',
+        hindi: '',
+        note: 'Mandatory. Note anything else the applicant mentioned that the above questions did not capture.',
+        isOpenText: true,
+        next: 'end_complete',
+        showClassification: true
+      }
+    }
+  }
+};
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let state = {
+  surveyId:   null,
+  currentQ:   null,
+  history:    [],
+  openText:   ''
+};
+
+function survey()   { return SURVEYS[state.surveyId]; }
+function question() { return survey().questions[state.currentQ]; }
+function isEnd(q)   { return q && q.startsWith('end_'); }
+
+// ─── Render helpers ───────────────────────────────────────────────────────────
+
+function renderSurveySelector() {
+  return `
+    <div class="selector-eyebrow">PM Suryaghar</div>
+    <div class="selector-title">Enumerator<br>Survey Guide</div>
+    <p class="selector-subtitle">
+      Select the survey you are conducting. Questions will appear one at a time
+      based on the respondent's answers, with skip logic applied automatically.
+    </p>
+    <div class="survey-cards">
+      <button class="survey-card-btn" onclick="selectSurvey('s1')">
+        <span class="survey-num-badge">Survey 1</span>
+        <span class="survey-card-body">
+          <span class="survey-card-name">Vendor Selection</span>
+          <span class="survey-card-desc">Applicant has not yet selected a vendor on the portal</span>
+        </span>
+      </button>
+      <button class="survey-card-btn" onclick="selectSurvey('s2')">
+        <span class="survey-num-badge">Survey 2</span>
+        <span class="survey-card-body">
+          <span class="survey-card-name">Upload Agreement / Installation Not Done</span>
+          <span class="survey-card-desc">Vendor selected but installation has not started</span>
+        </span>
+      </button>
+    </div>
+  `;
+}
+
+function renderQuestion(qId) {
+  const q = survey().questions[qId];
+  const canBack = state.history.length > 0;
+
+  // Progress
+  const allIds = Object.keys(survey().questions);
+  const idx    = allIds.indexOf(qId);
+  const pct    = Math.round(((idx + 1) / allIds.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressModule').textContent = q.module;
+  document.getElementById('progressQid').textContent   = q.id;
+
+  const noteHtml = q.note
+    ? `<div class="enum-note">
+         <div class="enum-note-label">Enumerator instruction</div>
+         <div class="enum-note-text">${q.note}</div>
+       </div>`
+    : '';
+
+  const hindiHtml = q.hindi
+    ? `<div class="q-hindi">${q.hindi}</div>`
+    : '';
+
+  const backBtn = canBack
+    ? `<button class="btn btn-ghost" onclick="goBack()">&#8592; Back</button>`
+    : '';
+
+  let body = '';
+
+  if (q.isOpenText) {
+    body = `
+      ${noteHtml}
+      <textarea class="open-text-area" id="openTextInput" placeholder="Type notes here…" rows="5">${state.openText}</textarea>
+      <div class="btn-row">
+        ${backBtn}
+        <button class="btn btn-success" onclick="submitOpenText('${q.next}', ${!!q.showClassification})">
+          Done — End Survey
+        </button>
+      </div>
+    `;
+  } else {
+    const opts = q.options.map((o, i) => `
+      <button class="option-btn" onclick="pick(${i}, '${qId}')">
+        <span class="option-radio"></span>
+        <span class="option-content">
+          <span class="option-text">${o.text}</span>
+          ${o.hindi ? `<span class="option-hindi">${o.hindi}</span>` : ''}
+          ${o.actionNote ? `<span class="option-action">&#8594; ${o.actionNote}</span>` : ''}
+        </span>
+      </button>
+    `).join('');
+
+    body = `
+      ${noteHtml}
+      <div class="options">${opts}</div>
+      ${canBack ? `<div class="btn-row">${backBtn}</div>` : ''}
+    `;
+  }
+
+  return `
+    <div class="q-module">${q.module}</div>
+    <div class="q-text">${q.text}</div>
+    ${hindiHtml}
+    ${body}
+  `;
+}
+
+function renderEnd(endType) {
+  const MAP = {
+    end_complete:  { icon: '&#10003;', cls: 'complete', title: 'Survey Complete',       msg: 'The survey has been completed. Thank you.' },
+    end_refused:   { icon: '&mdash;',  cls: 'stopped',  title: 'Survey Ended',          msg: 'Respondent did not consent to participate.' },
+    end_no_answer: { icon: '&mdash;',  cls: 'stopped',  title: 'Call Not Connected',    msg: 'Rang — no answer. Record the outcome.' },
+    end_invalid:   { icon: '&mdash;',  cls: 'stopped',  title: 'Call Not Connected',    msg: 'Number invalid or switched off. Record the outcome.' },
+    end_hung_up:   { icon: '&mdash;',  cls: 'stopped',  title: 'Call Ended',            msg: 'Connected but respondent refused to talk / hung up. Record the outcome.' }
+  };
+  const m = MAP[endType] || { icon: '&mdash;', cls: 'stopped', title: 'Survey Ended', msg: '' };
+
+  // Classification tags only for Survey 2 completed surveys
+  let classHtml = '';
+  if (endType === 'end_complete' && state.surveyId === 's2') {
+    const TAGS = [
+      'On track — no intervention needed',
+      'Vendor non-responsive — escalate',
+      'Vendor change requested',
+      'Loan / finance barrier',
+      'Portal / agreement upload pending',
+      'DISCOM / subsidy follow-up needed',
+      'Quality complaint — escalate',
+      'Disengaged — no action'
+    ];
+    classHtml = `
+      <div class="classification">
+        <div class="classification-label">Post-survey classification — select one</div>
+        <div class="tag-grid">
+          ${TAGS.map(t => `<button class="tag" onclick="toggleTag(this)">${t}</button>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="end-wrap">
+      <div class="end-icon ${m.cls}">${m.icon}</div>
+      <div class="end-title">${m.title}</div>
+      <p class="end-msg">${m.msg}</p>
+      ${classHtml}
+      <button class="btn btn-primary" onclick="newSurvey()">New Survey</button>
+    </div>
+  `;
+}
+
+// ─── Main render ──────────────────────────────────────────────────────────────
+
+function render() {
+  const card        = document.getElementById('mainCard');
+  const badge       = document.getElementById('surveyBadge');
+  const progressWrap= document.getElementById('progressWrap');
+
+  if (!state.surveyId) {
+    badge.classList.remove('visible');
+    progressWrap.classList.remove('visible');
+    card.innerHTML = renderSurveySelector();
+    return;
+  }
+
+  badge.textContent = survey().badge;
+  badge.classList.add('visible');
+
+  if (isEnd(state.currentQ)) {
+    progressWrap.classList.remove('visible');
+    card.innerHTML = renderEnd(state.currentQ);
+    return;
+  }
+
+  progressWrap.classList.add('visible');
+  card.innerHTML = renderQuestion(state.currentQ);
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+
+function selectSurvey(id) {
+  state = { surveyId: id, currentQ: SURVEYS[id].startQuestion, history: [], openText: '' };
+  render();
+}
+
+function pick(optIdx, qId) {
+  const opt = survey().questions[qId].options[optIdx];
+  state.history.push(qId);
+  state.currentQ = opt.next;
+  state.openText = '';
+  render();
+}
+
+function submitOpenText(nextQ) {
+  const el = document.getElementById('openTextInput');
+  if (el) state.openText = el.value;
+  state.history.push(state.currentQ);
+  state.currentQ = nextQ;
+  render();
+}
+
+function goBack() {
+  if (state.history.length) {
+    state.currentQ = state.history.pop();
+    state.openText = '';
+    render();
+  }
+}
+
+function newSurvey() {
+  state = { surveyId: null, currentQ: null, history: [], openText: '' };
+  render();
+}
+
+function toggleTag(el) {
+  // Single-select: deselect others in the grid first
+  el.closest('.tag-grid').querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+
+</body>
+</html>

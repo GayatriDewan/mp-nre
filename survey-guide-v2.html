@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PM Suryaghar — Survey Guide v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-blue:    #1C2F62;
+      --blue-2:       #173363;
+      --blue-3:       #264D96;
+      --blue-4:       #5480D6;
+      --light-blue:   #A8CCEB;
+      --dark-green:   #0F4D42;
+      --light-green:  #ABE5BF;
+      --dark-yellow:  #D49E00;
+      --light-yellow: #FFE087;
+      --dark-grey:    #212E38;
+      --light-grey:   #F2F2F5;
+      --mid-grey:     #CBD2DB;
+      --white:        #FFFFFF;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--light-grey);
+      color: var(--dark-grey);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--dark-blue);
+      color: var(--white);
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-height: 52px;
+    }
+
+    .hdr-left { display: flex; flex-direction: column; gap: 0.05rem; flex: 1; min-width: 0; }
+    .hdr-org  { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.5; }
+    .hdr-name { font-size: 0.85rem; font-weight: 600; }
+
+    #surveyBadge {
+      background: var(--blue-3);
+      color: var(--white);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.22rem 0.65rem;
+      border-radius: 10px;
+      white-space: nowrap;
+      display: none;
+    }
+    #surveyBadge.on { display: inline-block; }
+
+    .hdr-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.2); display: none; }
+    .hdr-divider.on { display: block; }
+
+    #btnNew {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.22);
+      border-radius: 6px;
+      padding: 0.28rem 0.7rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      line-height: 1.4;
+      display: none;
+      white-space: nowrap;
+      text-align: center;
+      transition: background 0.15s;
+    }
+    #btnNew.on  { display: block; }
+    #btnNew:hover { background: rgba(255,255,255,0.2); }
+    #btnNew .btn-sub { font-weight: 400; font-size: 0.6rem; opacity: 0.7; }
+
+    /* ── MAIN ── */
+    main { max-width: 800px; margin: 0 auto; padding: 1.5rem 1rem 5rem; }
+
+    /* ── SELECTOR ── */
+    #selector { padding: 1rem 0; }
+
+    .sel-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 2px 14px rgba(28,47,98,0.09);
+      padding: 2rem 1.75rem;
+    }
+
+    .sel-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-3); margin-bottom: 0.35rem; }
+    .sel-title-hi { font-size: 1.35rem; font-weight: 700; color: var(--dark-blue); line-height: 1.2; margin-bottom: 0.15rem; }
+    .sel-title-en { font-size: 0.82rem; font-weight: 400; color: var(--dark-grey); opacity: 0.45; margin-bottom: 1.1rem; }
+    .sel-desc-hi  { font-size: 0.82rem; color: var(--dark-grey); opacity: 0.65; line-height: 1.6; margin-bottom: 0.4rem; }
+    .sel-desc-en  { font-size: 0.75rem; color: var(--dark-grey); opacity: 0.4; line-height: 1.55; margin-bottom: 1.6rem; }
+
+    .survey-list { display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .survey-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      background: var(--light-grey);
+      border: 2px solid transparent;
+      border-radius: 9px;
+      padding: 1rem 1.15rem;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      width: 100%;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .survey-btn:hover { border-color: var(--blue-4); background: #eef2fc; }
+
+    .s-num {
+      background: var(--dark-blue);
+      color: var(--white);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 0.15rem;
+    }
+
+    .s-title-hi { font-size: 0.95rem; font-weight: 700; color: var(--dark-blue); margin-bottom: 0.1rem; }
+    .s-title-en { font-size: 0.78rem; font-weight: 400; color: var(--dark-grey); opacity: 0.45; margin-bottom: 0.25rem; }
+    .s-desc     { font-size: 0.76rem; color: var(--dark-grey); opacity: 0.55; line-height: 1.45; }
+
+    /* ── SURVEY CONTAINER ── */
+    #container { display: none; }
+    #container.on { display: block; }
+
+    .q-list { display: flex; flex-direction: column; gap: 0.8rem; padding-top: 1.35rem; }
+
+    /* ── QUESTION ROW ── */
+    .q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+    }
+
+    /* Left gutter */
+    .q-gutter {
+      width: 48px;
+      min-width: 48px;
+      display: flex;
+      justify-content: center;
+      padding-top: 14px;
+    }
+
+    /* Arrow indicator — hidden until is-next-target */
+    .arrow-ind {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      position: sticky;
+      top: 60px;
+    }
+
+    .is-next-target .arrow-ind { display: flex; }
+
+    .arrow-circle {
+      width: 28px;
+      height: 28px;
+      background: var(--blue-3);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      animation: aPulse 1.6s ease-in-out infinite;
+    }
+
+    .arrow-lbl {
+      font-size: 7.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--blue-3);
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    @keyframes aPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(38,77,150,0.5); }
+      55%       { box-shadow: 0 0 0 9px rgba(38,77,150,0); }
+    }
+
+    /* ── QUESTION CARD ── */
+    .q-card {
+      flex: 1;
+      background: var(--white);
+      border-radius: 10px;
+      border-left: 3px solid transparent;
+      box-shadow: 0 1px 6px rgba(28,47,98,0.07);
+      padding: 1.15rem 1.4rem 1.25rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .is-next-target .q-card {
+      border-left-color: var(--blue-3);
+      box-shadow: 0 4px 18px rgba(28,47,98,0.13);
+    }
+
+    .is-answered .q-card {
+      border-left-color: var(--light-blue);
+    }
+
+    /* Question number + text */
+    .q-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .q-num {
+      background: var(--dark-blue);
+      color: var(--white);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.18rem 0.52rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .q-texts { flex: 1; }
+
+    .q-hi {
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--dark-blue);
+      line-height: 1.4;
+      margin-bottom: 0.2rem;
+    }
+
+    .q-en {
+      font-size: 0.76rem;
+      font-weight: 400;
+      color: var(--dark-grey);
+      opacity: 0.42;
+      line-height: 1.45;
+    }
+
+    /* Enumerator note */
+    .q-note {
+      background: #fffbea;
+      border-left: 3px solid var(--dark-yellow);
+      border-radius: 0 6px 6px 0;
+      padding: 0.55rem 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .note-tag {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9a7000;
+      margin-bottom: 0.2rem;
+    }
+
+    .note-hi {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #4a3800;
+      line-height: 1.5;
+      margin-bottom: 0.15rem;
+    }
+
+    .note-en {
+      font-size: 0.71rem;
+      font-weight: 400;
+      color: #7a5800;
+      opacity: 0.65;
+      line-height: 1.4;
+    }
+
+    /* Options */
+    .q-opts { display: flex; flex-direction: column; gap: 0.42rem; }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      background: var(--light-grey);
+      border: 1.5px solid transparent;
+      border-radius: 7px;
+      padding: 0.65rem 0.9rem;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+      transition: border-color 0.12s, background 0.12s;
+    }
+
+    .opt:hover { border-color: var(--blue-4); background: #eef2fc; }
+
+    .opt.sel {
+      background: #dce8f8;
+      border-color: var(--blue-3);
+    }
+
+    .opt-dot {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--mid-grey);
+      margin-top: 3px;
+      position: relative;
+      transition: border-color 0.12s, background 0.12s;
+    }
+
+    .opt.sel .opt-dot {
+      border-color: var(--blue-3);
+      background: var(--blue-3);
+    }
+
+    .opt.sel .opt-dot::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .opt-body { display: flex; flex-direction: column; gap: 0.12rem; }
+
+    .opt-hi {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--dark-grey);
+      line-height: 1.38;
+    }
+
+    .opt-en {
+      font-size: 0.74rem;
+      font-weight: 400;
+      color: var(--dark-grey);
+      opacity: 0.42;
+      line-height: 1.35;
+    }
+
+    .opt-action {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.2rem;
+      margin-top: 0.18rem;
+      background: #e8f0fd;
+      border-radius: 4px;
+      padding: 0.15rem 0.45rem;
+      width: fit-content;
+    }
+
+    .opt-action-hi {
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--blue-3);
+      line-height: 1.35;
+    }
+
+    .opt-action-en {
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: var(--blue-3);
+      opacity: 0.6;
+    }
+
+    /* Open text */
+    .open-wrap { margin-top: 0.65rem; }
+
+    .open-ta {
+      width: 100%;
+      min-height: 95px;
+      border: 1.5px solid var(--mid-grey);
+      border-radius: 7px;
+      padding: 0.65rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--dark-grey);
+      resize: vertical;
+      line-height: 1.5;
+      transition: border-color 0.15s;
+    }
+    .open-ta:focus { outline: none; border-color: var(--blue-3); }
+
+    .btn-done {
+      margin-top: 0.65rem;
+      background: var(--dark-green);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1.15rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1.5;
+      transition: background 0.15s;
+    }
+    .btn-done:hover { background: #0a3c33; }
+    .btn-done .sub  { font-size: 0.68rem; font-weight: 400; opacity: 0.75; display: block; }
+
+    /* ── END CARD ── */
+    .end-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .end-card {
+      flex: 1;
+      background: var(--white);
+      border-radius: 10px;
+      border-left: 3px solid transparent;
+      box-shadow: 0 1px 6px rgba(28,47,98,0.07);
+      padding: 1.5rem 1.5rem 1.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .is-next-target .end-card {
+      border-left-color: var(--blue-3);
+      box-shadow: 0 4px 18px rgba(28,47,98,0.13);
+    }
+
+    .end-icon {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      background: var(--light-green);
+      color: var(--dark-green);
+    }
+
+    .end-title-hi { font-size: 1rem; font-weight: 700; color: var(--dark-blue); margin-bottom: 0.15rem; }
+    .end-title-en { font-size: 0.75rem; font-weight: 400; color: var(--dark-grey); opacity: 0.4; margin-bottom: 0.5rem; }
+    .end-msg-hi   { font-size: 0.82rem; font-weight: 500; color: var(--dark-grey); opacity: 0.65; margin-bottom: 0.15rem; text-align: center; }
+    .end-msg-en   { font-size: 0.72rem; color: var(--dark-grey); opacity: 0.35; text-align: center; }
+
+    /* Classification tags */
+    .class-wrap {
+      width: 100%;
+      border-top: 1.5px solid var(--light-grey);
+      padding-top: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .class-lbl-hi { font-size: 0.72rem; font-weight: 700; color: var(--dark-grey); opacity: 0.55; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.15rem; }
+    .class-lbl-en { font-size: 0.65rem; color: var(--dark-grey); opacity: 0.35; margin-bottom: 0.7rem; }
+
+    .tag-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; }
+
+    .tag {
+      padding: 0.38rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      border: 1.5px solid var(--mid-grey);
+      background: var(--white);
+      color: var(--dark-grey);
+      font-family: inherit;
+      text-align: left;
+      transition: all 0.12s;
+    }
+    .tag .tag-hi { font-weight: 700; display: block; }
+    .tag .tag-en { font-size: 0.63rem; font-weight: 400; opacity: 0.5; display: block; }
+    .tag:hover   { border-color: var(--blue-4); color: var(--blue-3); }
+    .tag.sel     { background: var(--dark-blue); color: var(--white); border-color: var(--dark-blue); }
+    .tag.sel .tag-en { opacity: 0.65; }
+
+    /* ── FOOTER ── */
+    footer { text-align: center; padding: 1rem; font-size: 0.72rem; color: #adb5bd; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 560px) {
+      .q-gutter { width: 36px; min-width: 36px; }
+      .arrow-circle { width: 24px; height: 24px; font-size: 11px; }
+      .q-card { padding: 1rem 1.1rem; }
+      main { padding: 1rem 0.75rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <span class="hdr-org">IDinsight</span>
+    <span class="hdr-name">PM Suryaghar — Survey Guide</span>
+  </div>
+  <span id="surveyBadge"></span>
+  <div class="hdr-divider" id="hdrDiv"></div>
+  <button id="btnNew" onclick="newSurvey()">
+    Naya Survey
+    <span class="btn-sub">New Survey</span>
+  </button>
+</header>
+
+<main>
+
+  <!-- ── SURVEY SELECTOR ── -->
+  <div id="selector">
+    <div class="sel-card">
+      <div class="sel-eyebrow">PM Suryaghar</div>
+      <div class="sel-title-hi">Survey Guide</div>
+      <div class="sel-title-en">Enumerator Survey Guide</div>
+      <p class="sel-desc-hi">Kaunsa survey kar rahe hain woh chunein. Saare sawaal ek saath dikhenge — jawab chunne par teer (arrow) agle sawaal ki taraf le jayega.</p>
+      <p class="sel-desc-en">Select the survey you are conducting. All questions are shown on one page. When you select an answer, an arrow appears on the left pointing to the next question you need to go to.</p>
+      <div class="survey-list">
+        <button class="survey-btn" onclick="loadSurvey('s1')">
+          <span class="s-num">Survey 1</span>
+          <div>
+            <div class="s-title-hi">Vendor Selection</div>
+            <div class="s-title-en">Vendor Selection</div>
+            <div class="s-desc">Vendor abhi select nahi kiya gaya / Applicant has not yet selected a vendor on the portal</div>
+          </div>
+        </button>
+        <button class="survey-btn" onclick="loadSurvey('s2')">
+          <span class="s-num">Survey 2</span>
+          <div>
+            <div class="s-title-hi">Upload Agreement / Installation Nahi Hua</div>
+            <div class="s-title-en">Upload Agreement / Installation Not Done</div>
+            <div class="s-desc">Vendor select ho gaya par installation shuru nahi hua / Vendor selected but installation has not started</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SURVEY CONTAINER ── -->
+  <div id="container">
+    <div id="qList" class="q-list"></div>
+  </div>
+
+</main>
+
+<footer>&copy; <span id="yr"></span> IDinsight. All rights reserved.</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ─── Survey data ──────────────────────────────────────────────────────────────
+// Each question: id, numLabel, hi, en, note?, isOpenText?, next?, showClassification?, options[]
+// Each option:   hi, en, action?, next
+
+const S1 = [
+  {
+    id: 'q0', numLabel: 'Q0',
+    hi: 'Call connect hua?',
+    en: 'Was the call connected?',
+    note: { hi: 'Enumerator records — yeh respondent ko mat padhein.', en: 'Enumerator records — do not read aloud.' },
+    options: [
+      { hi: 'Connected',                                                              en: 'Connected',                                                                      next: 'q1' },
+      { hi: 'Ring gayi, koi jawab nahi',                                              en: 'Not connected — rang, no answer',                                                next: 'end' },
+      { hi: 'Switched off',                                                           en: 'Not connected — switched off',                                                   next: 'end' },
+      { hi: 'Connected par baat nahi ki / hang up kar diya / galat / wrong number',   en: 'Connected but refused to talk / hung up / invalid number / wrong number',        next: 'end' }
+    ]
+  },
+  {
+    id: 'q1', numLabel: 'Q1',
+    hi: 'Kya aapke yahan solar panel ka kaam shuru ho gaya hai ya lag gaya hai?',
+    en: 'Has installation started or been completed at your home?',
+    note: { hi: 'Note: Jo applicant pehle se vendor ke saath kaam shuru kar chuke hain unhe filter karein.', en: 'Purpose: Filter out applicants who have already progressed / started working with a vendor.' },
+    options: [
+      { hi: 'Haan, installation ho gaya',      en: 'Yes, installation complete',  next: 'q1a' },
+      { hi: 'Kaam shuru hai / chal raha hai',  en: 'Work in progress',            next: 'q1a' },
+      { hi: 'Nahi, abhi shuru nahi hua',       en: 'No, not started yet',         next: 'q2'  }
+    ]
+  },
+  {
+    id: 'q1a', numLabel: 'Q1a',
+    hi: 'Kya aapko koi dikkat aa rahi hai?',
+    en: '[If work in progress or complete] Are you facing any issues?',
+    options: [
+      { hi: 'Nahi, sab theek chal raha hai',                                          en: 'No, everything is fine',                                  next: 'q1b' },
+      { hi: 'Haan, subsidy nahi aayi',                                                en: 'Yes — subsidy not received',                              next: 'q1b' },
+      { hi: 'Haan, DISCOM inspection / net metering nahi hua',                        en: 'Yes — DISCOM inspection / net metering not done',         next: 'q1b' },
+      { hi: 'Haan, installation dheere chal raha hai',                               en: 'Yes — installation is slow',
+        action: { hi: 'Vendor ka naam likhein', en: 'Record the name of the vendor they are working with' }, next: 'q1b' },
+      { hi: 'Haan, installation quality mein dikkat / panels kaam nahi kar rahe',    en: 'Yes — installation quality issue / panels not working',   next: 'q1b' },
+      { hi: 'Haan, koi aur dikkat (likhein)',                                         en: 'Yes — other issue (enumerator records)',
+        action: { hi: 'Samasya likhein', en: 'Record issue' }, next: 'q1b' }
+    ]
+  },
+  {
+    id: 'q1b', numLabel: 'Q1b',
+    hi: 'Aapne vendor decide kar liya hai — portal par select karne mein hum aapki kya madad kar saktein hain?',
+    en: 'It appears you are currently working with a vendor. How can we support you with selecting them on the portal?',
+    note: { hi: 'Enumerator note: Applicant ko samjhayein ki yeh step subsidy aur aage ke kaam ke liye zaroori hai.', en: 'Explain to applicants why this step is necessary for subsequent stages, including subsidy disbursement.' },
+    options: [
+      { hi: 'Portal par vendor kaise select karein — step by step batayein', en: 'Explain how to select vendor on portal — step by step',
+        action: { hi: 'Prakriya samjhayein', en: 'Explain process' }, next: 'q7' },
+      { hi: 'Koi aur vendor select karna hai',                               en: 'Want to select a different vendor',
+        action: { hi: 'Prakriya samjhayein', en: 'Explain process' }, next: 'q7' },
+      { hi: 'Ab installation nahi chahiye',                                  en: 'No longer wants installation',                                  next: 'q7' },
+      { hi: 'Koi aur madad chahiye (likhein)',                               en: 'Other help needed (record)',
+        action: { hi: 'Samasya likhein', en: 'Record issue' }, next: 'q7' }
+    ]
+  },
+  {
+    id: 'q2', numLabel: 'Q2',
+    hi: 'Kya aap abhi bhi PM Surya Ghar Yojana ke tahat solar panel lagwana chahte hain?',
+    en: 'Are you still interested in getting rooftop solar installed under PM Surya Ghar Yojana?',
+    options: [
+      { hi: 'Haan, interested hain',              en: 'Yes, interested',               next: 'q4'  },
+      { hi: 'Soch rahe hain / faisla nahi hua',   en: 'Considering / not yet decided', next: 'q3'  },
+      { hi: 'Nahi, ab nahi chahiye',              en: 'No, no longer interested',      next: 'q2a' }
+    ]
+  },
+  {
+    id: 'q2a', numLabel: 'Q2a',
+    hi: 'Kya wajah hai ki aap ab solar panel nahi lagwana chahte?',
+    en: '[If not interested] What is the main reason you are no longer interested?',
+    options: [
+      { hi: 'Cost bahut zyada lag raha hai',                             en: 'Cost is too high',                           next: 'q7' },
+      { hi: 'Loan nahi mil raha',                                        en: 'Cannot get a loan',                          next: 'q7' },
+      { hi: 'Ghar ki chhat / jagah ki dikkat hai',                       en: 'Roof / space issue',                         next: 'q7' },
+      { hi: 'Bijli ka bill kam aata hai, zaroorat nahi lagi',            en: 'Low electricity bill — not needed',          next: 'q7' },
+      { hi: 'Vendor ya scheme ke baare mein bharosa nahi hai',           en: 'No trust in vendor / scheme',                next: 'q7' },
+      { hi: 'Galti se apply ho gaya tha / kisi aur ne karwaya tha',      en: 'Applied by mistake / someone else applied',  next: 'q7' },
+      { hi: 'Koi aur wajah (likhein)',                                   en: 'Other reason (record)',
+        action: { hi: 'Wajah likhein', en: 'Record reason' }, next: 'q7' }
+    ]
+  },
+  {
+    id: 'q3', numLabel: 'Q3',
+    hi: 'Kya koi cheez hai jo aapki madad kar sakti hai decide karne mein?',
+    en: 'What would help you make a decision?',
+    options: [
+      { hi: 'Process ki poori jaankari chahiye',                                       en: 'Need full information about the process',  next: 'q7' },
+      { hi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh jaankari chahiye',       en: 'Need information on costs and subsidy',    next: 'q7' },
+      { hi: 'Vendor ke baare mein jaankari chahiye',                                   en: 'Need information about vendors',           next: 'q7' },
+      { hi: 'Loan ki jaankari chahiye',                                                en: 'Need information about loans',             next: 'q7' },
+      { hi: 'Abhi kuch nahi chahiye, baad mein dekhenge',                              en: 'Nothing needed right now — will decide later', next: 'q7' },
+      { hi: 'Koi aur madad (likhein)',                                                 en: 'Other help (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q7' }
+    ]
+  },
+  {
+    id: 'q4', numLabel: 'Q4',
+    hi: 'Kya aapne kisi vendor ko decide kar liya hai?',
+    en: 'Have you decided on a vendor?',
+    options: [
+      { hi: 'Haan, vendor decide kar liya hai',  en: 'Yes, vendor decided',    next: 'q6' },
+      { hi: 'Nahi, abhi decide nahi kiya',       en: 'No, not yet decided',    next: 'q5' }
+    ]
+  },
+  {
+    id: 'q5', numLabel: 'Q5',
+    hi: 'Vendor decide karne mein aapko kya madad chahiye?',
+    en: 'What would help you decide on a vendor?',
+    options: [
+      { hi: 'Process ki poori jaankari chahiye — vendor kaise dhundhe / select karein',      en: 'Need full info on process — how to find / select a vendor',
+        action: { hi: 'Portal par vendor select karne ke kadam batayein', en: 'Explain portal vendor selection steps' }, next: 'q7' },
+      { hi: 'Vendor ke baare mein jaankari chahiye — ratings, reviews, contact details',     en: 'Need vendor info — ratings, reviews, contact details',
+        action: { hi: 'District ki registered vendor list share karein', en: 'Share registered vendor list for district' }, next: 'q7' },
+      { hi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh samajhna hai',                en: 'Need to understand costs and subsidy',
+        action: { hi: 'Subsidy aur kharche ke baare mein samjhayein', en: 'Explain subsidy slabs and typical costs' }, next: 'q7' },
+      { hi: 'Portal chalana nahi aata / kisi ki madad chahiye',                             en: 'Cannot navigate portal / needs help',
+        action: { hi: 'Portal ka step-by-step tarika batayein ya helpline number dein', en: 'Provide step-by-step portal guidance or helpline' }, next: 'q7' },
+      { hi: 'Loan ki jaankari chahiye',                                                     en: 'Need loan information',
+        action: { hi: 'Zarori jaankari dein', en: 'Provide guidance needed' }, next: 'q7' },
+      { hi: 'Kuch aur madad chahiye (likhein)',                                             en: 'Other help needed (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q7' }
+    ]
+  },
+  {
+    id: 'q6', numLabel: 'Q6',
+    hi: 'Aapne vendor decide kar liya hai — phir portal par select kyun nahi kiya?',
+    en: 'You have decided on a vendor — why have you not selected them on the portal?',
+    options: [
+      { hi: 'Portal chalana nahi aata / vendor select karne ka option samajh nahi aaya',    en: 'Cannot navigate portal / vendor selection option not understood',
+        action: { hi: 'Prakriya samjhayein', en: 'Explain process' }, next: 'q7' },
+      { hi: 'Portal par try kiya par technical error / problem aa gayi',                    en: 'Tried portal but got a technical error',                               next: 'q7' },
+      { hi: 'Mujhe pata nahi tha ki mujhe portal par karna hai — laga tha vendor khud kar lega', en: 'Did not know they had to do it — thought vendor would do it',
+        action: { hi: 'Prakriya samjhayein', en: 'Explain process' }, next: 'q7' },
+      { hi: 'Abhi time nahi mila / baad mein karenge',                                     en: 'Have not had time yet / will do later',                                next: 'q7' },
+      { hi: 'Vendor ne response nahi diya / contact kiya par jawab nahi mila',              en: 'Vendor did not respond / no reply after contact',
+        action: { hi: 'Vendor ka naam poochein aur non-responsive flag karein', en: 'Ask for vendor name and flag as vendor non-responsive' }, next: 'q7' },
+      { hi: 'Koi vendor ka number chahiye jo mere area mein kaam karta hai',               en: 'Need a vendor number for their area',
+        action: { hi: 'District ki registered vendor list share karein', en: 'Share registered vendor list for district' }, next: 'q7' },
+      { hi: 'Loan / finance ke baare mein jaankari chahiye',                               en: 'Need loan / finance information',
+        action: { hi: 'Jaankari dein', en: 'Provide information' }, next: 'q7' },
+      { hi: 'Subsidy kitni milegi, kitna kharcha aayega — yeh samajhna hai',               en: 'Need to understand subsidy and costs',
+        action: { hi: 'Jaankari dein', en: 'Provide information' }, next: 'q7' },
+      { hi: 'Koi aur wajah (likhein)',                                                     en: 'Other reason (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q7' }
+    ]
+  },
+  {
+    id: 'q7', numLabel: 'Q7',
+    hi: 'Enumerator notes (zaroori)',
+    en: '[Open text — mandatory] Enumerator notes: anything else the applicant mentioned that the above questions did not capture.',
+    note: { hi: 'Zaroori: Jo kuch bhi upar ke sawaalon mein record nahi hua, woh yahan likhein.', en: 'Mandatory. Note anything else the applicant mentioned that the above questions did not capture.' },
+    isOpenText: true,
+    next: 'end'
+  }
+];
+
+const S2 = [
+  {
+    id: 'q0', numLabel: 'Q0',
+    hi: 'Call connect hua?',
+    en: 'Was the call connected?',
+    note: { hi: 'Enumerator records — yeh respondent ko mat padhein.', en: 'Enumerator records — do not read aloud.' },
+    options: [
+      { hi: 'Connected',                                                             en: 'Connected',                                                                      next: 'q1' },
+      { hi: 'Ring gayi, koi jawab nahi',                                             en: 'Not connected — rang, no answer',                                                next: 'end' },
+      { hi: 'Switched off',                                                          en: 'Not connected — switched off',                                                   next: 'end' },
+      { hi: 'Connected par baat nahi ki / hang up kar diya / galat / wrong number',  en: 'Connected but refused to talk / hung up / invalid number / wrong number',        next: 'end' }
+    ]
+  },
+  {
+    id: 'q1', numLabel: 'Q1',
+    hi: 'Kya aapke yahan solar panel ka kaam shuru ho gaya hai?',
+    en: 'Has installation started at your home?',
+    options: [
+      { hi: 'Haan, installation ho gaya (complete)',          en: 'Yes, installation complete',
+        action: { hi: 'Note: aage badhe applicants ko filter karein', en: 'Filter out applicants who have already progressed' }, next: 'q1a' },
+      { hi: 'Kaam shuru hai / chal raha hai (in progress)',  en: 'Work in progress',             next: 'q1a' },
+      { hi: 'Nahi, abhi tak kuch nahi hua',                  en: 'No, nothing has happened yet', next: 'q1b' }
+    ]
+  },
+  {
+    id: 'q1a', numLabel: 'Q1a',
+    hi: 'Kya aapko koi dikkat aa rahi hai?',
+    en: '[If work is done or in progress] Are you facing any issues?',
+    options: [
+      { hi: 'Nahi, sab theek hai',                                                    en: 'No, everything is fine',
+        action: { hi: 'Record karein: "Kaam sahi chal raha hai / vendor ne portal update nahi kiya"', en: 'Record: "Resolved / on track; Vendor side issue of not updating the portal"' }, next: 'q9' },
+      { hi: 'Haan, vendor ne portal par details upload nahi ki',                       en: 'Yes — vendor has not uploaded details on portal',
+        action: { hi: 'Applicant se kahein ki vendor se portal par details upload karwayein', en: 'Urge applicant to get vendor to upload' }, next: 'q9' },
+      { hi: 'Haan, subsidy nahi aayi / subsidy mein delay',                            en: 'Yes — subsidy not received / delay in subsidy',    next: 'q9' },
+      { hi: 'Haan, DISCOM inspection / net metering nahi hua',                         en: 'Yes — DISCOM inspection / net metering not done',  next: 'q9' },
+      { hi: 'Haan, installation dheere chal raha hai',                                en: 'Yes — installation is slow',
+        action: { hi: 'Vendor ka naam likhein', en: 'Record the name of the vendor they are working with' }, next: 'q6' },
+      { hi: 'Haan, installation quality mein dikkat / panels kaam nahi kar rahe',     en: 'Yes — installation quality issue / panels not working', next: 'q9' },
+      { hi: 'Haan, koi aur dikkat (likhein)',                                          en: 'Yes — other issue (enumerator records)',
+        action: { hi: 'Samasya likhein', en: 'Record issue' }, next: 'q9' }
+    ]
+  },
+  {
+    id: 'q1b', numLabel: 'Q1b',
+    hi: 'Hamare record ke hisaab se aapne [VENDOR NAME] ko select kiya tha, lagbhag [X mahine] pehle. Kya yeh sahi hai?',
+    en: '[Pre-populated from backend] "Our records show you selected [VENDOR NAME] approximately [X months] ago. Is that correct?"',
+    note: { hi: 'Backend se pre-filled — respondent ko zaror padhein.', en: 'Pre-populated from backend data. Read aloud to the respondent.' },
+    options: [
+      { hi: 'Haan, sahi hai',              en: 'Yes, correct',              next: 'q2' },
+      { hi: 'Nahi, vendor ka naam alag hai', en: 'No — different vendor name',
+        action: { hi: 'Sahi vendor ka naam likhein', en: 'Record the correct vendor name' }, next: 'q2' },
+      { hi: 'Mujhe yaad nahi',             en: 'Cannot remember',
+        action: { hi: 'Telemetry data ke saath aage badhein', en: 'Proceed with telemetry data' }, next: 'q2' }
+    ]
+  },
+  {
+    id: 'q2', numLabel: 'Q2',
+    hi: 'Kya aap abhi bhi PM Surya Ghar Yojana ke tahat solar panel lagwana chahte hain?',
+    en: 'Are you still interested in getting rooftop solar installed under PM Surya Ghar Yojana?',
+    options: [
+      { hi: 'Haan, interested hain',             en: 'Yes, interested',               next: 'q4'  },
+      { hi: 'Soch rahe hain / faisla nahi hua',  en: 'Considering / not yet decided', next: 'q3'  },
+      { hi: 'Nahi, ab nahi chahiye',             en: 'No, no longer interested',      next: 'q2a' }
+    ]
+  },
+  {
+    id: 'q2a', numLabel: 'Q2a',
+    hi: 'Kya wajah hai ki aap ab solar panel nahi lagwana chahte?',
+    en: '[If not interested] What is the main reason you are no longer interested?',
+    options: [
+      { hi: 'Cost bahut zyada lag raha hai',                             en: 'Cost is too high',                           next: 'q9' },
+      { hi: 'Loan nahi mil raha',                                        en: 'Cannot get a loan',                          next: 'q9' },
+      { hi: 'Ghar ki chhat / jagah ki dikkat hai',                       en: 'Roof / space issue',                         next: 'q9' },
+      { hi: 'Bijli ka bill kam aata hai, zaroorat nahi lagi',            en: 'Low electricity bill — not needed',          next: 'q9' },
+      { hi: 'Vendor ya scheme ke baare mein bharosa nahi hai',           en: 'No trust in vendor / scheme',                next: 'q9' },
+      { hi: 'Galti se apply ho gaya tha / kisi aur ne karwaya tha',      en: 'Applied by mistake / someone else applied',  next: 'q9' },
+      { hi: 'Koi aur wajah (likhein)',                                   en: 'Other reason (record)',
+        action: { hi: 'Wajah likhein', en: 'Record reason' }, next: 'q9' }
+    ]
+  },
+  {
+    id: 'q3', numLabel: 'Q3',
+    hi: 'Kya koi cheez hai jo aapki madad kar sakti hai decide karne mein?',
+    en: 'What would help you make a decision?',
+    options: [
+      { hi: 'Process ki poori jaankari chahiye',                                  en: 'Need full information about the process',      next: 'q9' },
+      { hi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh jaankari chahiye',  en: 'Need information on costs and subsidy',        next: 'q9' },
+      { hi: 'Vendor ke baare mein jaankari chahiye',                              en: 'Need information about vendors',               next: 'q9' },
+      { hi: 'Loan ki jaankari chahiye',                                           en: 'Need information about loans',                 next: 'q9' },
+      { hi: 'Abhi kuch nahi chahiye, baad mein dekhenge',                         en: 'Nothing needed right now — will decide later', next: 'q9' },
+      { hi: 'Koi aur madad (likhein)',                                            en: 'Other help (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q9' }
+    ]
+  },
+  {
+    id: 'q4', numLabel: 'Q4',
+    hi: 'Agar kaam shuru nahi hua, toh koi rukawat hai?',
+    en: 'If work has not started yet, is there anything holding it up?',
+    options: [
+      { hi: 'Nahi, sab theek hai',                               en: 'No, everything is fine',                                  next: 'q9' },
+      { hi: 'Haan, vendor ki taraf se delay hai',                en: 'Yes — delay from vendor side',                            next: 'q6' },
+      { hi: 'Haan, loan ka intezaam baaki hai',                  en: 'Yes — loan arrangement still pending',                    next: 'q5' },
+      { hi: 'DISCOM approval pending hai',                       en: 'DISCOM approval pending',                                next: 'q8' },
+      { hi: 'Haan, mere taraf se kuch documents baaki hain',     en: 'Yes — some documents still pending from my side',        next: 'q8' },
+      { hi: 'Cost bahut zyada lag raha hai',                     en: 'Cost is too high',                                       next: 'q8' },
+      { hi: 'Aur kuch wajah (likhein)',                          en: 'Other reason (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q8' }
+    ]
+  },
+  {
+    id: 'q5', numLabel: 'Q5',
+    hi: 'Kya aapne loan ke liye apply kiya hai?',
+    en: '[If loan issue] Have you applied for a loan?',
+    options: [
+      { hi: 'Haan, apply kiya par reject ho gaya',                          en: 'Yes, applied but rejected',                                  next: 'q5a' },
+      { hi: 'Haan, apply kiya, processing mein hai',                         en: 'Yes, applied — processing in progress',                      next: 'q8' },
+      { hi: 'Haan, loan approve hua par paisa nahi aaya',                    en: 'Yes, loan approved but money not received',                  next: 'q8' },
+      { hi: 'Nahi, apply nahi kiya — pata nahi kahan se karein',             en: 'No, did not apply — do not know where to apply',
+        action: { hi: 'Flag karein: loan guidance chahiye', en: 'Flag: needs loans guidance' }, next: 'q8' },
+      { hi: 'Nahi, bank wale loan dene se mana kar rahe hain',               en: 'No — bank refusing to give loan',                            next: 'q5a' }
+    ]
+  },
+  {
+    id: 'q5a', numLabel: 'Q5a',
+    hi: 'Kaunsa bank tha? Aur unhone kya wajah batayi?',
+    en: '[If rejected / refused] Which bank, and what reason did they give?',
+    note: { hi: 'Bank ka naam likhein (open text).', en: 'Bank name: open text — enumerator records.' },
+    options: [
+      { hi: 'CIBIL score / credit history',                        en: 'CIBIL score / credit history',                   next: 'q8' },
+      { hi: 'Income kam hai',                                      en: 'Income too low',                                 next: 'q8' },
+      { hi: 'Umar zyada hai',                                      en: 'Age too high',                                   next: 'q8' },
+      { hi: 'Documents incomplete hain',                           en: 'Documents incomplete',                           next: 'q8' },
+      { hi: 'Bank ne bola target nahi hai / scheme nahi hai',      en: 'Bank said no target / scheme not available',     next: 'q8' },
+      { hi: 'Koi wajah nahi batayi',                               en: 'No reason given',                                next: 'q8' },
+      { hi: 'Koi aur wajah (likhein)',                             en: 'Other reason (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q8' }
+    ]
+  },
+  {
+    id: 'q6', numLabel: 'Q6',
+    hi: 'Kya vendor ne koi wajah batayi delay ki?',
+    en: 'Did the vendor give any reason for the delay?',
+    options: [
+      { hi: 'Material / equipment available nahi hai',                            en: 'Material / equipment not available',                                  next: 'q7' },
+      { hi: 'Vendor ne bola area mein aur kaam hain, baad mein aayenge',          en: 'Vendor said there is other work in the area — will come later',       next: 'q7' },
+      { hi: 'Koi wajah nahi batayi',                                              en: 'No reason given',                                                    next: 'q7' },
+      { hi: 'Koi aur wajah (likhein)',                                            en: 'Other reason (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q7' }
+    ]
+  },
+  {
+    id: 'q7', numLabel: 'Q7',
+    hi: 'Aapke liye aage badhne ke liye kya madad chahiye?',
+    en: '[Vendor side delays] What help would make it possible for you to move forward?',
+    options: [
+      { hi: 'Same vendor ke saath continue karna chahte hain, par jaldi kaam ho jaye',  en: 'Continue with same vendor — just get work done faster',  next: 'q9' },
+      { hi: 'Vendor badalna chahte hain',                                               en: 'Want to change vendor',
+        action: { hi: 'Flag karein: vendor badalna chahte hain', en: 'Flag: wants vendor change' }, next: 'q7a' },
+      { hi: 'Abhi kuch nahi chahiye',                                                  en: 'No help needed right now',                               next: 'q9' },
+      { hi: 'Kuch aur madad chahiye (likhein)',                                         en: 'Other help (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q9' }
+    ]
+  },
+  {
+    id: 'q7a', numLabel: 'Q7a',
+    hi: 'Kya aapko pata hai vendor kaise change karein portal par?',
+    en: 'Do you know how to change the vendor on the portal?',
+    options: [
+      { hi: 'Haan', en: 'Yes',
+        action: { hi: 'Applicant se kahein ki portal par vendor change karein', en: 'Ask user to change the vendor on the portal' }, next: 'q9' },
+      { hi: 'Nahi', en: 'No',
+        action: { hi: 'Vendor change karne ka tarika samjhayein', en: 'Explain the process of changing the vendor' }, next: 'q9' }
+    ]
+  },
+  {
+    id: 'q8', numLabel: 'Q8',
+    hi: 'Aapke liye aage badhne ke liye kya madad chahiye?',
+    en: '[Consumer side delays] What help would make it possible for you to move forward?',
+    options: [
+      { hi: 'Loan / finance mein madad chahiye',                    en: 'Help with loan / finance',             next: 'q9' },
+      { hi: 'Portal par kaise proceed karein yeh samajhna hai',     en: 'How to proceed on the portal',
+        action: { hi: 'Portal navigation samjhayein', en: 'Explain portal navigation' }, next: 'q9' },
+      { hi: 'DISCOM / net metering mein madad chahiye',             en: 'Help with DISCOM / net metering',
+        action: { hi: 'Process ki jaankari dein', en: 'Support with process awareness' }, next: 'q9' },
+      { hi: 'Abhi kuch nahi chahiye',                               en: 'No help needed right now',             next: 'q9' },
+      { hi: 'Kuch aur madad chahiye (likhein)',                     en: 'Other help (record)',
+        action: { hi: 'Likhein', en: 'Record' }, next: 'q9' }
+    ]
+  },
+  {
+    id: 'q9', numLabel: 'Q9',
+    hi: 'Enumerator notes (zaroori)',
+    en: '[Open text — mandatory] Enumerator notes: anything else the applicant mentioned that the above questions did not capture.',
+    note: { hi: 'Zaroori: Jo kuch bhi upar ke sawaalon mein record nahi hua, woh yahan likhein.', en: 'Mandatory. Note anything else the applicant mentioned that the above questions did not capture.' },
+    isOpenText: true,
+    next: 'end',
+    showClassification: true
+  }
+];
+
+const SURVEYS = {
+  s1: { name: 'Survey 1', title: 'Vendor Selection', qs: S1 },
+  s2: { name: 'Survey 2', title: 'Upload Agreement / Installation Nahi Hua', qs: S2 }
+};
+
+// ─── State ─────────────────────────────────────────────────────────────────────
+
+let activeSurvey = null;
+let answers = {};     // { qId: optIdx }
+let arrowOn = null;   // qId or 'end' currently showing the arrow
+
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+
+function setArrow(targetId) {
+  const rid = (targetId === 'end' || !targetId) ? 'end' : targetId;
+
+  if (arrowOn) {
+    const prev = document.getElementById('row-' + arrowOn);
+    if (prev) prev.classList.remove('is-next-target');
+  }
+  arrowOn = rid;
+
+  const el = document.getElementById('row-' + rid);
+  if (el) {
+    el.classList.add('is-next-target');
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+  }
+}
+
+// ─── Build DOM ─────────────────────────────────────────────────────────────────
+
+function gutter() {
+  const g = document.createElement('div');
+  g.className = 'q-gutter';
+  g.innerHTML = `<div class="arrow-ind"><div class="arrow-circle">&#8594;</div><div class="arrow-lbl">Yahan<br>jayein</div></div>`;
+  return g;
+}
+
+function buildQRow(q) {
+  const row = document.createElement('div');
+  row.className = 'q-row';
+  row.id = 'row-' + q.id;
+  row.appendChild(gutter());
+
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  // Note
+  const noteHtml = q.note
+    ? `<div class="q-note">
+         <div class="note-tag">Enumerator ke liye</div>
+         <div class="note-hi">${q.note.hi}</div>
+         <div class="note-en">${q.note.en}</div>
+       </div>`
+    : '';
+
+  // Body
+  let bodyHtml = '';
+  if (q.isOpenText) {
+    bodyHtml = `
+      <div class="open-wrap">
+        <textarea class="open-ta" id="ta-${q.id}" placeholder="Yahan likhein…" rows="4"></textarea>
+        <button class="btn-done" onclick="doneOpenText('${q.id}','${q.next}',${!!q.showClassification})">
+          Survey khatam karein
+          <span class="sub">Done — End Survey</span>
+        </button>
+      </div>`;
+  } else {
+    bodyHtml = `<div class="q-opts">${
+      q.options.map((o, i) => `
+        <button class="opt" id="opt-${q.id}-${i}" onclick="pickOpt('${q.id}',${i},'${o.next}')">
+          <span class="opt-dot"></span>
+          <span class="opt-body">
+            <span class="opt-hi">${o.hi}</span>
+            <span class="opt-en">${o.en}</span>
+            ${o.action ? `<span class="opt-action"><span class="opt-action-hi">${o.action.hi}</span><span class="opt-action-en">&nbsp;(${o.action.en})</span></span>` : ''}
+          </span>
+        </button>`).join('')
+    }</div>`;
+  }
+
+  card.innerHTML = `
+    <div class="q-top">
+      <span class="q-num">${q.numLabel}</span>
+      <div class="q-texts">
+        <div class="q-hi">${q.hi}</div>
+        <div class="q-en">${q.en}</div>
+      </div>
+    </div>
+    ${noteHtml}
+    ${bodyHtml}`;
+
+  row.appendChild(card);
+  return row;
+}
+
+function buildEndRow(surveyId) {
+  const row = document.createElement('div');
+  row.className = 'end-row';
+  row.id = 'row-end';
+  row.appendChild(gutter());
+
+  const TAGS = [
+    { hi: 'Sab theek — koi madad nahi chahiye',           en: 'On track — no intervention needed' },
+    { hi: 'Vendor ne jawab nahi diya — escalate karein',  en: 'Vendor non-responsive — escalate' },
+    { hi: 'Vendor badalna chahte hain',                   en: 'Vendor change requested' },
+    { hi: 'Loan / finance rukawat',                       en: 'Loan / finance barrier' },
+    { hi: 'Portal / agreement upload baaki hai',          en: 'Portal / agreement upload pending' },
+    { hi: 'DISCOM / subsidy follow-up zaroori',           en: 'DISCOM / subsidy follow-up needed' },
+    { hi: 'Quality complaint — escalate karein',          en: 'Quality complaint — escalate' },
+    { hi: 'Respondent engaged nahi — koi action nahi',    en: 'Disengaged — no action' }
+  ];
+
+  const classHtml = surveyId === 's2'
+    ? `<div class="class-wrap">
+         <div class="class-lbl-hi">Survey ke baad classification — ek chunein</div>
+         <div class="class-lbl-en">Post-survey classification tag — select one</div>
+         <div class="tag-grid">
+           ${TAGS.map(t => `
+             <button class="tag" onclick="pickTag(this)">
+               <span class="tag-hi">${t.hi}</span>
+               <span class="tag-en">${t.en}</span>
+             </button>`).join('')}
+         </div>
+       </div>`
+    : '';
+
+  const card = document.createElement('div');
+  card.className = 'end-card';
+  card.innerHTML = `
+    <div class="end-icon">&#10003;</div>
+    <div class="end-title-hi">Survey Khatam</div>
+    <div class="end-title-en">Survey Complete</div>
+    <div class="end-msg-hi">Shukriya — jawab record ho gaye</div>
+    <div class="end-msg-en">Thank you — responses have been recorded</div>
+    ${classHtml}`;
+
+  row.appendChild(card);
+  return row;
+}
+
+// ─── Actions ───────────────────────────────────────────────────────────────────
+
+function loadSurvey(id) {
+  activeSurvey = id;
+  answers = {};
+  arrowOn = null;
+
+  const sv = SURVEYS[id];
+  document.getElementById('surveyBadge').textContent = sv.name + ': ' + sv.title;
+  document.getElementById('surveyBadge').classList.add('on');
+  document.getElementById('hdrDiv').classList.add('on');
+  document.getElementById('btnNew').classList.add('on');
+
+  document.getElementById('selector').style.display = 'none';
+  document.getElementById('container').classList.add('on');
+
+  const list = document.getElementById('qList');
+  list.innerHTML = '';
+  sv.qs.forEach(q => list.appendChild(buildQRow(q)));
+  list.appendChild(buildEndRow(id));
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pickOpt(qId, idx, nextId) {
+  // Deselect previous for this question
+  const prev = answers[qId];
+  if (prev !== undefined) {
+    document.getElementById(`opt-${qId}-${prev}`)?.classList.remove('sel');
+  }
+  answers[qId] = idx;
+  document.getElementById(`opt-${qId}-${idx}`)?.classList.add('sel');
+  document.getElementById('row-' + qId)?.classList.add('is-answered');
+  setArrow(nextId);
+}
+
+function doneOpenText(qId, nextId) {
+  document.getElementById('row-' + qId)?.classList.add('is-answered');
+  setArrow(nextId);
+}
+
+function pickTag(el) {
+  el.closest('.tag-grid').querySelectorAll('.tag').forEach(t => t.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function newSurvey() {
+  activeSurvey = null;
+  answers = {};
+  arrowOn = null;
+
+  document.getElementById('surveyBadge').classList.remove('on');
+  document.getElementById('hdrDiv').classList.remove('on');
+  document.getElementById('btnNew').classList.remove('on');
+  document.getElementById('container').classList.remove('on');
+  document.getElementById('selector').style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
