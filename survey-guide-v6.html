@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="hi-Latn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PM Surya Ghar — Survey Skip Logic Guide v5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --dark-blue:  #1C2F62;
+    --blue-3:     #264D96;
+    --gold:       #D49E00;
+    --gold-light: #FFF3C4;
+    --green:      #0F4D42;
+    --grey-bg:    #F2F2F5;
+    --white:      #FFFFFF;
+    --text:       #1a1a2e;
+    --text-muted: #6b7280;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--grey-bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  #hdr {
+    background: var(--dark-blue);
+    color: var(--white);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  #hdr svg { flex-shrink: 0; }
+  #hdr-titles { display: flex; flex-direction: column; gap: 0.1rem; }
+  #hdr-title  { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.01em; line-height: 1.2; }
+  #hdr-sub    { font-size: 0.78rem; font-weight: 400; opacity: 0.75; }
+
+  /* ── Survey selector screen ── */
+  #sel-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    gap: 1.25rem;
+    min-height: calc(100vh - 56px);
+  }
+  #sel-screen h2 { font-size: 1.25rem; font-weight: 700; color: var(--dark-blue); text-align: center; }
+  .sel-btn {
+    width: 100%; max-width: 380px;
+    background: var(--white);
+    border: 2px solid var(--blue-3);
+    color: var(--dark-blue);
+    border-radius: 12px;
+    padding: 1.1rem 1.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+  }
+  .sel-btn:hover { background: var(--blue-3); color: var(--white); }
+  .sel-btn-sub {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 0.2rem;
+    opacity: 0.75;
+  }
+
+  /* ── Survey view ── */
+  #survey-view { display: none; padding-bottom: 3rem; }
+
+  /* ── Question list ── */
+  #qList {
+    position: relative;
+    padding: 1.25rem 1.25rem 2rem 68px; /* left 68px = 56px gutter + 12px gap */
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* ── Arrow SVG overlay ── */
+  #arrowSvg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 56px;
+    pointer-events: none;
+    z-index: 20;
+    overflow: visible;
+  }
+
+  /* ── Question row ── */
+  .q-row {
+    margin-bottom: 1rem;
+    transition: opacity 0.2s;
+  }
+  .q-row.is-answered .q-card {
+    border-left: 4px solid var(--blue-3);
+  }
+
+  /* ── Question card ── */
+  .q-card {
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .q-row.is-answered .q-card {
+    border: 1px solid rgba(38,77,150,0.25);
+  }
+
+  /* ── Q-number band (top of card) ── */
+  .q-band {
+    background: var(--dark-blue);
+    color: var(--white);
+    padding: 0.5rem 1.1rem;
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .q-band-label { font-size: 0.75rem; font-weight: 500; opacity: 0.65; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  /* ── Card body ── */
+  .q-body { padding: 0.9rem 1.1rem 1.1rem; }
+
+  /* ── Question text ── */
+  .q-hi { font-size: 1rem; font-weight: 700; line-height: 1.5; margin-bottom: 0.3rem; }
+  .q-en { font-size: 0.82rem; font-weight: 400; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.85rem; }
+
+  /* ── Open-text ── */
+  .open-text {
+    width: 100%;
+    min-height: 80px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    padding: 0.6rem 0.8rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    resize: vertical;
+  }
+  .open-text:focus { outline: none; border-color: var(--blue-3); }
+
+  /* ── Options ── */
+  .q-opts { display: flex; flex-direction: column; gap: 0.55rem; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1.5px solid #e5e7eb;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: var(--white);
+    text-align: left;
+    font-family: inherit;
+  }
+  .opt:hover { border-color: var(--blue-3); background: #f0f4ff; }
+  .opt.sel   { border-color: var(--blue-3); background: #e8effe; }
+  .opt-dot {
+    width: 18px; height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .opt.sel .opt-dot { border-color: var(--blue-3); background: var(--blue-3); }
+  .opt-text { flex: 1; }
+  .opt-hi { font-size: 0.9rem; font-weight: 600; line-height: 1.45; }
+  .opt-en { font-size: 0.76rem; font-weight: 400; color: var(--text-muted); margin-top: 0.15rem; }
+
+  /* ── End card ── */
+  .end-card {
+    background: var(--dark-blue);
+    color: var(--white);
+    border-radius: 10px;
+    padding: 1.5rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .end-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.3rem; }
+  .end-card p  { font-size: 0.85rem; opacity: 0.8; margin-bottom: 1.1rem; }
+  .new-btn {
+    background: var(--gold);
+    color: #1a1400;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.4rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .new-btn:hover { opacity: 0.85; }
+
+  /* ── Classification tags (Survey 2 end) ── */
+  .tag-section { margin-top: 1.1rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1rem; text-align: left; }
+  .tag-label { font-size: 0.8rem; font-weight: 600; opacity: 0.85; margin-bottom: 0.6rem; }
+  .tag-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: var(--white);
+    border-radius: 20px;
+    padding: 0.3rem 0.85rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .tag-btn:hover { background: rgba(255,255,255,0.25); }
+  .tag-btn.sel   { background: var(--gold); border-color: var(--gold); color: #1a1400; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header id="hdr">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <circle cx="18" cy="18" r="18" fill="#264D96"/>
+    <circle cx="18" cy="13" r="5" fill="#FFE087"/>
+    <path d="M9 28c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="#FFE087" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div id="hdr-titles">
+    <div id="hdr-title">PM Surya Ghar — Skip Logic Guide</div>
+    <div id="hdr-sub">Enumerator Reference Tool · IDinsight</div>
+  </div>
+</header>
+
+<!-- Survey selector -->
+<div id="sel-screen">
+  <h2>Kaun sa survey shuru karna hai?<br/><span style="font-size:0.85rem;font-weight:500;color:var(--text-muted)">Which survey are you starting?</span></h2>
+  <button class="sel-btn" onclick="loadSurvey(1)">
+    Survey 1 — Vendor Selection
+    <span class="sel-btn-sub">Vendor Chayan Survey · Q1 se Q11 tak</span>
+  </button>
+  <button class="sel-btn" onclick="loadSurvey(2)">
+    Survey 2 — Upload Agreement
+    <span class="sel-btn-sub">Upload Agreement Survey · Q1 se Q14 tak</span>
+  </button>
+</div>
+
+<!-- Survey view -->
+<div id="survey-view">
+  <div id="qList">
+    <svg id="arrowSvg"></svg>
+    <!-- question rows injected here -->
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SURVEY DATA v6 — all 'hi' fields in Roman script
+   ============================================================ */
+const SURVEYS = {
+
+1: {
+  name: 'Survey 1 — Vendor Selection',
+  qs: [
+    {
+      id: 'q1', num: 'Q1',
+      hi: 'Call connect hua?',
+      en: 'Was the call connected?',
+      options: [
+        { hi: 'Connected',                                          en: 'Yes, connected',                                               next: 'q2'  },
+        { hi: 'Not connected — rang, no answer',                          en: 'Not connected — rang, no answer',                              next: 'end' },
+        { hi: 'Not connected — switched off',                                en: 'Not connected — switched off',                                 next: 'end' },
+        { hi: 'Connected but refused to talk / hung up / invalid number / wrong number', en: 'Connected but refused to talk / hung up / invalid number',  next: 'end' },
+      ]
+    },
+    {
+      id: 'q2', num: 'Q2',
+      hi: 'Kya aapke yahan solar panel ka kaam shuru ho gaya hai?',
+      en: 'Has the solar panel installation started at your home?',
+      options: [
+        { hi: 'Haan, installation ho gaya',                     en: 'Yes, installation complete',             next: 'q3' },
+        { hi: 'Kaam shuru hai / chal raha hai',                   en: 'Work started / in progress',             next: 'q3' },
+        { hi: 'Nahi, abhi shuru nahi hua',                                en: 'No, not started yet',                    next: 'q5' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q5' },
+      ]
+    },
+    {
+      id: 'q3', num: 'Q3',
+      hi: 'Kya aapko koi dikkat aa rahi hai?',
+      en: 'Are you facing any issues with the installation?',
+      options: [
+        { hi: 'Nahi, sab theek chal raha hai',                                  en: 'No, everything is fine',                 next: 'q4' },
+        { hi: 'Haan, subsidy nahi aayi',                                    en: 'Yes, subsidy not received',              next: 'q4' },
+        { hi: 'Haan, DISCOM inspection / net metering nahi hua',           en: 'Yes, DISCOM/net metering issue',         next: 'q4' },
+        { hi: 'Haan, installation dheere chal raha hai',                        en: 'Yes, installation is slow',              next: 'q4' },
+        { hi: 'Haan, installation quality mein dikkat / panels kaam nahi kar rahe',         en: 'Yes, quality/panel issue',               next: 'q4' },
+        { hi: 'Haan, koi aur dikkat',                                      en: 'Yes, other issue',                       next: 'q4' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q4' },
+      ]
+    },
+    {
+      id: 'q4', num: 'Q4',
+      hi: 'Aapne vendor decide kar liya hai, portal par select karne main hum aapki kya maddad kar saktein hai?',
+      en: 'How can we help you select a vendor on the portal?',
+      options: [
+        { hi: 'Portal par vendor kaise select karein — step by step batayein',  en: 'Explain portal vendor selection steps',  next: 'q11' },
+        { hi: 'Koi aur vendor select karna hai',                            en: 'Want to select a different vendor',      next: 'q11' },
+        { hi: 'Ab installation nahi chahiye',                              en: 'No longer want installation',            next: 'q11' },
+        { hi: 'Koi aur madad',                                              en: 'Other help needed',                      next: 'q11' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q11' },
+      ]
+    },
+    {
+      id: 'q5', num: 'Q5',
+      hi: 'Kya aap abhi bhi PM Surya Ghar Yojana ke tahat solar panel lagwana chahte hain?',
+      en: 'Are you still interested in getting solar panels installed under PM Surya Ghar Yojana?',
+      options: [
+        { hi: 'Haan, interested hain',                                      en: 'Yes, still interested',                  next: 'q8' },
+        { hi: 'Soch rahe hain / faisla nahi hua',                           en: 'Still considering / undecided',          next: 'q7' },
+        { hi: 'Nahi, ab nahi chahiye',                                     en: 'No, no longer interested',               next: 'q6' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q8' },
+      ]
+    },
+    {
+      id: 'q6', num: 'Q6',
+      hi: 'Kya wajah hai ki aap ab solar panel nahi lagwana chahte?',
+      en: 'What is the main reason you are no longer interested?',
+      options: [
+        { hi: 'Cost bahut zyada lag raha hai',                              en: 'Cost too high',                          next: 'q11' },
+        { hi: 'Loan nahi mil raha',                                       en: 'Cannot get a loan',                      next: 'q11' },
+        { hi: 'Ghar ki chhat / jagah ki dikkat hai',                             en: 'Roof space / structural issue',          next: 'q11' },
+        { hi: 'Bijli ka bill kam aata hai, zaroorat nahi lagi',                en: 'Low electricity bill, doesn\'t seem necessary', next: 'q11' },
+        { hi: 'Vendor ya scheme ke baare mein bharosa nahi hai',               en: 'No trust in vendor / scheme',            next: 'q11' },
+        { hi: 'Galti se apply ho gaya tha / kisi aur ne karwaya tha',         en: 'Applied by mistake / someone else applied', next: 'q11' },
+        { hi: 'Koi aur wajah',                                              en: 'Other reason',                           next: 'q11' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q11' },
+      ]
+    },
+    {
+      id: 'q7', num: 'Q7',
+      hi: 'Kya koi cheez hai jo aapki madad kar sakti hai decide karne mein?',
+      en: 'What would help you make a decision?',
+      options: [
+        { hi: 'Process ki poori jaankari chahiye',                           en: 'Need full process information',          next: 'q11' },
+        { hi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh jaankari chahiye', en: 'Need cost and subsidy information',    next: 'q11' },
+        { hi: 'Vendor ke baare mein jaankari chahiye',                        en: 'Need information about vendors',         next: 'q11' },
+        { hi: 'Loan ki jaankari chahiye',                                   en: 'Need loan information',                  next: 'q11' },
+        { hi: 'Abhi kuch nahi chahiye, baad mein dekhenge',                    en: 'Nothing needed right now, will decide later', next: 'q11' },
+        { hi: 'Koi aur madad',                                              en: 'Other help needed',                      next: 'q11' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q11' },
+      ]
+    },
+    {
+      id: 'q8', num: 'Q8',
+      hi: 'Kya aapne kisi vendor ko decide kar liya hai?',
+      en: 'Have you decided on a vendor?',
+      options: [
+        { hi: 'Haan, vendor decide kar liya hai',                           en: 'Yes, vendor decided',                    next: 'q10' },
+        { hi: 'Nahi, abhi decide nahi kiya',                              en: 'No, not decided yet',                    next: 'q9' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q9' },
+      ]
+    },
+    {
+      id: 'q9', num: 'Q9',
+      hi: 'Vendor decide karne mein aapko kya madad chahiye?',
+      en: 'What help do you need to decide on a vendor?',
+      options: [
+        { hi: 'Process ki poori jaankari chahiye — vendor kaise dhundhe/select karein', en: 'Process info — how to find and select a vendor', next: 'q11' },
+        { hi: 'Vendor ke baare mein jaankari chahiye — ratings, reviews, contact details', en: 'Vendor info — ratings, reviews, contact details', next: 'q11' },
+        { hi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh samajhna hai',    en: 'Need clarity on costs and subsidy',      next: 'q11' },
+        { hi: 'Portal chalana nahi aata / kisi ki madad chahiye',               en: 'Need help navigating the portal',        next: 'q11' },
+        { hi: 'Loan ki jaankari chahiye',                                   en: 'Need loan information',                  next: 'q11' },
+        { hi: 'Kuch aur madad (enumerator records)',                                   en: 'Other help needed',                      next: 'q11' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q11' },
+      ]
+    },
+    {
+      id: 'q10', num: 'Q10',
+      hi: 'Aapne vendor decide kar liya hai — phir portal par select kyun nahi kiya?',
+      en: 'You have decided on a vendor — why have you not selected them on the portal?',
+      options: [
+        { hi: 'Portal chalana nahi aata / vendor select karne ka option samajh nahi aaya', en: 'Don\'t know how to use portal / couldn\'t find vendor select option', next: 'q11' },
+        { hi: 'Portal par try kiya par technical error / problem aa gayi',    en: 'Tried but got a technical error on portal', next: 'q11' },
+        { hi: 'Mujhe pata nahi tha ki mujhe portal par karna hai — laga tha vendor khud kar lega', en: 'Didn\'t know I had to do it — thought vendor would handle it', next: 'q11' },
+        { hi: 'Abhi time nahi mila / baad mein karenge',                     en: 'Haven\'t had time / will do later',       next: 'q11' },
+        { hi: 'Vendors ne response nahi diya / contact kiya par jawab nahi mila', en: 'Vendor unresponsive / no reply',     next: 'q11' },
+        { hi: 'Koi vendor ka number chahiye jo mere area mein kaam karta hai', en: 'Need a vendor number working in my area', next: 'q11' },
+        { hi: 'Loan / finance ke baare mein jaankari chahiye',                en: 'Need loan / finance information',        next: 'q11' },
+        { hi: 'Subsidy kitni milegi, kitna kharcha aayega — yeh samjhana hai',   en: 'Need clarity on subsidy and costs',      next: 'q11' },
+        { hi: 'Koi aur wajah (enumerator records)',                                   en: 'Other reason',                           next: 'q11' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q11' },
+      ]
+    },
+    {
+      id: 'q11', num: 'Q11',
+      hi: 'Enumerator Notes — yahan zaroori jaankari likhein',
+      en: 'Enumerator Notes — record any important observations',
+      isOpenText: true,
+      next: 'end'
+    },
+  ]
+},
+
+/* ============================================================
+   SURVEY DATA — Survey 2 (Upload Agreement, Q0–Q13)
+   ============================================================ */
+2: {
+  name: 'Survey 2 — Upload Agreement',
+  qs: [
+    {
+      id: 'q1', num: 'Q1',
+      hi: 'Call connect hua?',
+      en: 'Was the call connected?',
+      options: [
+        { hi: 'Connected',                                          en: 'Yes, connected',                                               next: 'q2'  },
+        { hi: 'Not connected — rang, no answer',                          en: 'Not connected — rang, no answer',                              next: 'end' },
+        { hi: 'Not connected — switched off',                                en: 'Not connected — switched off',                                 next: 'end' },
+        { hi: 'Connected but refused to talk / hung up / invalid number / wrong number', en: 'Connected but refused to talk / hung up / invalid number',  next: 'end' },
+      ]
+    },
+    {
+      id: 'q2', num: 'Q2',
+      hi: 'Kya aapke yahan solar panel ka kaam shuru ho gaya hai?',
+      en: 'Has the solar panel installation started at your home?',
+      options: [
+        { hi: 'Haan, installation ho gaya',                     en: 'Yes, installation complete',             next: 'q3' },
+        { hi: 'Kaam shuru hai / chal raha hai',                   en: 'Work started / in progress',             next: 'q3' },
+        { hi: 'Nahi, abhi tak kuch nahi hua',                              en: 'No, nothing has happened yet',           next: 'q4' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q4' },
+      ]
+    },
+    {
+      id: 'q3', num: 'Q3',
+      hi: 'Kya aapko koi dikkat aa rahi hai?',
+      en: 'Are you facing any issues?',
+      options: [
+        { hi: 'Nahi, sab theek hai',                                          en: 'No, everything is fine',                 next: 'q14' },
+        { hi: 'Haan, vendor ne portal par details upload nahi ki',           en: 'Yes, vendor not uploaded to portal',     next: 'q14' },
+        { hi: 'Haan, subsidy nahi aayi / subsidy mein delay',                 en: 'Yes, subsidy delay',                     next: 'q14' },
+        { hi: 'Haan, DISCOM inspection / net metering nahi hua',           en: 'Yes, DISCOM/net metering issue',         next: 'q14' },
+        { hi: 'Haan, installation dheere chal raha hai',                        en: 'Yes, installation is slow',              next: 'q10'  },
+        { hi: 'Haan, installation quality mein dikkat / panels kaam nahi kar rahe',         en: 'Yes, quality/panel issue',               next: 'q14' },
+        { hi: 'Haan, koi aur dikkat',                                      en: 'Yes, other issue',                       next: 'q14' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q14' },
+      ]
+    },
+    {
+      id: 'q4', num: 'Q4',
+      hi: 'Kya aap abhi bhi PM Surya Ghar Yojana ke tahat solar panel lagwana chahte hain?',
+      en: 'Are you still interested in getting solar panels installed?',
+      options: [
+        { hi: 'Haan, interested hain',                                      en: 'Yes, still interested',                  next: 'q7' },
+        { hi: 'Soch rahe hain / faisla nahi hua',                           en: 'Still considering / undecided',          next: 'q6' },
+        { hi: 'Nahi, ab nahi chahiye',                                     en: 'No, no longer interested',               next: 'q5' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q7' },
+      ]
+    },
+    {
+      id: 'q5', num: 'Q5',
+      hi: 'Kya wajah hai ki aap ab solar panel nahi lagwana chahte?',
+      en: 'What is the main reason you are no longer interested?',
+      options: [
+        { hi: 'Cost bahut zyada lag raha hai',                              en: 'Cost too high',                          next: 'q14' },
+        { hi: 'Loan nahi mil raha',                                       en: 'Cannot get a loan',                      next: 'q14' },
+        { hi: 'Ghar ki chhat / jagah ki dikkat hai',                             en: 'Roof space / structural issue',          next: 'q14' },
+        { hi: 'Bijli ka bill kam aata hai, zaroorat nahi lagi',                en: 'Low electricity bill, doesn\'t seem necessary', next: 'q14' },
+        { hi: 'Vendor ya scheme ke baare mein bharosa nahi hai',               en: 'No trust in vendor / scheme',            next: 'q14' },
+        { hi: 'Galti se apply ho gaya tha / kisi aur ne karwaya tha',         en: 'Applied by mistake / someone else applied', next: 'q14' },
+        { hi: 'Koi aur wajah',                                              en: 'Other reason',                           next: 'q14' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q14' },
+      ]
+    },
+    {
+      id: 'q6', num: 'Q6',
+      hi: 'Kya koi cheez hai jo aapki madad kar sakti hai decide karne mein?',
+      en: 'What would help you make a decision?',
+      options: [
+        { hi: 'Process ki poori jaankari chahiye',                           en: 'Need full process information',          next: 'q14' },
+        { hi: 'Kitna kharcha aayega, subsidy kitni milegi — yeh jaankari chahiye', en: 'Need cost and subsidy information',   next: 'q14' },
+        { hi: 'Vendor ke baare mein jaankari chahiye',                        en: 'Need information about vendors',         next: 'q14' },
+        { hi: 'Loan ki jaankari chahiye',                                   en: 'Need loan information',                  next: 'q14' },
+        { hi: 'Abhi kuch nahi chahiye, baad mein dekhenge',                    en: 'Nothing needed right now, will decide later', next: 'q14' },
+        { hi: 'Koi aur madad',                                              en: 'Other help needed',                      next: 'q14' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q14' },
+      ]
+    },
+    {
+      id: 'q7', num: 'Q7',
+      hi: 'Agar kaam shuru nahi hua, toh koi rukawat hai?',
+      en: 'If work hasn\'t started, is there something holding it up?',
+      options: [
+        { hi: 'Nahi, sab theek hai',                                         en: 'No, everything is fine',                 next: 'q14' },
+        { hi: 'Haan, vendor ki taraf se delay hai',                          en: 'Yes, delay from vendor side',            next: 'q10'  },
+        { hi: 'Haan, loan ka intezaam baaki hai',                            en: 'Yes, loan arrangement pending',          next: 'q8'  },
+        { hi: 'DISCOM approval pending hai',                               en: 'DISCOM approval pending',                next: 'q13' },
+        { hi: 'Haan, mere taraf se kuch documents baaki hain',                     en: 'Documents pending from my side',         next: 'q13' },
+        { hi: 'Cost bahut zyada lag raha hai',                             en: 'Cost seems too high',                    next: 'q13' },
+        { hi: 'Aur kuch wajah',                                              en: 'Other reason',                           next: 'q13' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q13' },
+      ]
+    },
+    {
+      id: 'q8', num: 'Q8',
+      hi: 'Kya aapne loan ke liye apply kiya hai?',
+      en: 'Have you applied for a loan?',
+      options: [
+        { hi: 'Haan, apply kiya par reject ho gaya',                        en: 'Yes, applied but rejected',              next: 'q9'  },
+        { hi: 'Haan, apply kiya, processing mein hai',                       en: 'Yes, applied, in processing',            next: 'q13' },
+        { hi: 'Haan, loan approve hua par paisa nahi aaya',                  en: 'Yes, approved but funds not received',   next: 'q13' },
+        { hi: 'Nahi, apply nahi kiya — pata nahi kahan se karein',           en: 'No, don\'t know how to apply',           next: 'q13' },
+        { hi: 'Nahi, bank wale loan dene se mana kar rahe hain',             en: 'No, bank refusing to give loan',         next: 'q9'  },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q13' },
+      ]
+    },
+    {
+      id: 'q9', num: 'Q9',
+      hi: 'Kaunsa bank tha? Aur unhone kya wajah batayi?',
+      en: 'Which bank was it? What reason did they give?',
+      options: [
+        { hi: 'CIBIL score / credit history',                   en: 'CIBIL score / credit history issue',     next: 'q13' },
+        { hi: 'Income kam hai',                                             en: 'Income too low',                         next: 'q13' },
+        { hi: 'Umar zyada hai',                                          en: 'Age too high',                           next: 'q13' },
+        { hi: 'Documents incomplete',                                  en: 'Documents were incomplete',              next: 'q13' },
+        { hi: 'Bank ne bola target nahi hai / scheme nahi hai',            en: 'Bank said no target / scheme not available', next: 'q13' },
+        { hi: 'Koi wajah nahi batayi',                                       en: 'No reason given',                        next: 'q13' },
+        { hi: 'Koi aur wajah (enumerator records)',                                   en: 'Other reason',                           next: 'q13' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q13' },
+      ]
+    },
+    {
+      id: 'q10', num: 'Q10',
+      hi: 'Kya vendor ne koi wajah batayi delay ki?',
+      en: 'Did the vendor give a reason for the delay?',
+      options: [
+        { hi: 'Material / equipment available nahi hai',                   en: 'Material / equipment not available',     next: 'q11' },
+        { hi: 'Vendor ne bola area mein aur kaam hain, baad mein aayenge',        en: 'Vendor said busy in area, will come later', next: 'q11' },
+        { hi: 'Koi wajah nahi batayi',                                       en: 'No reason given',                        next: 'q11' },
+        { hi: 'Koi aur wajah (enumerator records)',                                   en: 'Other reason',                           next: 'q11' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q11' },
+      ]
+    },
+    {
+      id: 'q11', num: 'Q11',
+      hi: 'Aapke liye aage badhne liye kya madad chahiye?',
+      en: 'Vendor delays — what help do you need to move forward?',
+      options: [
+        { hi: 'Same vendore ke saath continue karna chahte hain, par jaldi kaam ho jaye', en: 'Continue with same vendor but speed up', next: 'q14' },
+        { hi: 'Vendor badalna chahte hain',                                  en: 'Want to change vendor',                  next: 'q12' },
+        { hi: 'Abhi kuch nahi chahiye',                                     en: 'Don\'t need anything right now',         next: 'q14' },
+        { hi: 'Kuch aur madad (enumerator records)',                                   en: 'Other help needed',                      next: 'q14' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q14' },
+      ]
+    },
+    {
+      id: 'q12', num: 'Q12',
+      hi: 'Kya aapko pata hai vendor kaise change karein portal par?',
+      en: 'Do you know how to change the vendor on the portal?',
+      options: [
+        { hi: 'Haan',                                              en: 'Yes, I know how',                        next: 'q14' },
+        { hi: 'Nahi',                                          en: 'No, I don\'t know',                      next: 'q14' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q14' },
+      ]
+    },
+    {
+      id: 'q13', num: 'Q13',
+      hi: 'Aapke liye aage badhne ke liye kya madad chahiye?',
+      en: 'Consumer-side delays — what help do you need to move forward?',
+      options: [
+        { hi: 'Loan / finance mein madad',                            en: 'Need help with loan / finance',          next: 'q14' },
+        { hi: 'Portal par kaise proceed karein',                    en: 'Need help navigating the portal',        next: 'q14' },
+        { hi: 'DISCOM / net metering mein madad',                     en: 'Need help with DISCOM / net metering',   next: 'q14' },
+        { hi: 'Abhi kuch nahi chahiye',                                     en: 'Don\'t need anything right now',         next: 'q14' },
+        { hi: 'Kuch aur madad (enumerator records)',                                   en: 'Other help needed',                      next: 'q14' },
+        { hi: 'Refuse / phone disconnected',               en: 'Refused to answer / phone disconnected', next: 'q14' },
+      ]
+    },
+    {
+      id: 'q14', num: 'Q14',
+      hi: 'Enumerator Notes — yahan zaroori jaankari likhein',
+      en: 'Enumerator Notes — record any important observations',
+      isOpenText: true,
+      next: 'end'
+    },
+  ],
+  tags: [
+    'On track — no intervention needed',
+    'Vendor non-responsive — escalate',
+    'Vendor change requested',
+    'Loan / finance barrier',
+    'Portal / agreement upload pending',
+    'DISCOM / subsidy follow-up needed',
+    'Quality complaint — escalate',
+    'Disengaged — no action',
+  ]
+}
+
+}; // end SURVEYS
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let activeSurvey = null;
+let answers      = {};       // qId → optIdx
+let currentArrow = null;     // { from: qId, to: qId|'end' }
+let activeTags   = new Set();
+
+/* ============================================================
+   LOAD SURVEY
+   ============================================================ */
+function loadSurvey(num) {
+  activeSurvey = SURVEYS[num];
+  answers      = {};
+  currentArrow = null;
+  activeTags   = new Set();
+
+  document.getElementById('sel-screen').style.display  = 'none';
+  document.getElementById('survey-view').style.display = 'block';
+
+  renderSurvey();
+}
+
+function renderSurvey() {
+  const list = document.getElementById('qList');
+
+  // Clear except the SVG
+  const svg = document.getElementById('arrowSvg');
+  list.innerHTML = '';
+  list.appendChild(svg);
+  svg.innerHTML = '';
+
+  const s = activeSurvey;
+
+  // Question rows
+  s.qs.forEach(q => {
+    const row = document.createElement('div');
+    row.className = 'q-row';
+    row.id = 'row-' + q.id;
+    row.innerHTML = buildQCard(q);
+    list.appendChild(row);
+  });
+
+  // END row
+  const endRow = document.createElement('div');
+  endRow.className = 'q-row';
+  endRow.id = 'row-end';
+  endRow.innerHTML = buildEndCard(s);
+  list.appendChild(endRow);
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function buildQCard(q) {
+  if (q.isOpenText) {
+    return `
+      <div class="q-card" id="card-${q.id}">
+        <div class="q-band">${q.num} <span class="q-band-label">notes</span></div>
+        <div class="q-body">
+          <div class="q-hi">${q.hi}</div>
+          <div class="q-en">${q.en}</div>
+          <textarea class="open-text" placeholder="Yahan likhein..." rows="4"
+            onchange="markOpenDone('${q.id}', '${q.next}')"></textarea>
+        </div>
+      </div>`;
+  }
+
+  const opts = q.options.map((o, i) => `
+    <button class="opt" id="opt-${q.id}-${i}" onclick="pickOpt('${q.id}', ${i}, '${o.next}')">
+      <span class="opt-dot"></span>
+      <span class="opt-text">
+        <span class="opt-hi">${o.hi}</span>
+        <span class="opt-en">${o.en}</span>
+      </span>
+    </button>`).join('');
+
+  return `
+    <div class="q-card" id="card-${q.id}">
+      <div class="q-band">${q.num}</div>
+      <div class="q-body">
+        <div class="q-hi">${q.hi}</div>
+        <div class="q-en">${q.en}</div>
+        <div class="q-opts">${opts}</div>
+      </div>
+    </div>`;
+}
+
+function buildEndCard(s) {
+  const tags = s.tags ? `
+    <div class="tag-section">
+      <div class="tag-label">Classification Tags (select all that apply)</div>
+      <div class="tag-opts">
+        ${s.tags.map(t => `<button class="tag-btn" onclick="toggleTag(this, '${t}')">${t}</button>`).join('')}
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="end-card">
+      <h3>Survey pura hua ✓</h3>
+      <p>Survey complete. Start a new survey for the next respondent.</p>
+      ${tags}
+      <button class="new-btn" onclick="resetToSelector()" style="margin-top:1.1rem">
+        Naya survey shuru karein — New Survey
+      </button>
+    </div>`;
+}
+
+/* ============================================================
+   ANSWER SELECTION
+   ============================================================ */
+function pickOpt(qId, idx, nextId) {
+  // Deselect previous selection for this question
+  const prev = answers[qId];
+  if (prev !== undefined) {
+    document.getElementById(`opt-${qId}-${prev}`)?.classList.remove('sel');
+  }
+
+  // Select new
+  answers[qId] = idx;
+  document.getElementById(`opt-${qId}-${idx}`)?.classList.add('sel');
+  document.getElementById('row-' + qId)?.classList.add('is-answered');
+
+  // Update arrow
+  currentArrow = { from: qId, to: nextId };
+  drawArrow();
+
+  // Scroll target into view after a short delay
+  setTimeout(() => {
+    const targetId = nextId === 'end' ? 'end' : nextId;
+    const target = document.getElementById('row-' + targetId);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 120);
+}
+
+function markOpenDone(qId, nextId) {
+  document.getElementById('row-' + qId)?.classList.add('is-answered');
+  currentArrow = { from: qId, to: nextId };
+  drawArrow();
+  setTimeout(() => {
+    const target = document.getElementById('row-' + nextId);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 120);
+}
+
+/* ============================================================
+   GOLDEN ARROW — SVG connector
+   ============================================================ */
+function drawArrow() {
+  const svg  = document.getElementById('arrowSvg');
+  const list = document.getElementById('qList');
+
+  // Sync SVG height with list scrollable height
+  const h = list.scrollHeight;
+  svg.setAttribute('height', h);
+  svg.style.height = h + 'px';
+
+  svg.innerHTML = '';
+
+  if (!currentArrow) return;
+
+  const { from, to } = currentArrow;
+
+  const fromCard = document.getElementById('card-' + from);
+  const toId     = to === 'end' ? 'row-end' : 'card-' + to;
+  const toEl     = document.getElementById(toId);
+
+  if (!fromCard || !toEl) return;
+
+  // offsetTop/offsetHeight relative to #qList (the position:relative offsetParent)
+  const startY = fromCard.offsetTop + fromCard.offsetHeight;
+  const endY   = to === 'end' ? toEl.offsetTop + 24 : toEl.offsetTop;
+
+  if (endY <= startY + 10) return;
+
+  const x        = 28;
+  const lineEndY = endY - 13;
+
+  svg.innerHTML = `
+    <circle cx="${x}" cy="${startY}" r="5.5" fill="#D49E00"/>
+    <line
+      x1="${x}" y1="${startY + 5}" x2="${x}" y2="${lineEndY}"
+      stroke="#D49E00" stroke-width="3.5" stroke-linecap="round"
+    />
+    <polygon
+      points="${x - 9},${lineEndY} ${x + 9},${lineEndY} ${x},${endY}"
+      fill="#D49E00"
+    />
+  `;
+}
+
+/* ============================================================
+   CLASSIFICATION TAGS
+   ============================================================ */
+function toggleTag(btn, tag) {
+  btn.classList.toggle('sel');
+  if (activeTags.has(tag)) activeTags.delete(tag);
+  else activeTags.add(tag);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetToSelector() {
+  activeSurvey = null;
+  answers      = {};
+  currentArrow = null;
+  activeTags   = new Set();
+
+  document.getElementById('survey-view').style.display  = 'none';
+  document.getElementById('sel-screen').style.display   = 'flex';
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+/* ============================================================
+   REDRAW ARROW ON WINDOW RESIZE (layout reflow changes offsets)
+   ============================================================ */
+window.addEventListener('resize', () => { if (currentArrow) drawArrow(); });
+</script>
+</body>
+</html>
